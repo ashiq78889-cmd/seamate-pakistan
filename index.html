@@ -1,358 +1,359 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SeaMate Pakistan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SeaMate Pakistan</title>
 
-  <link rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    #map {
-      height: 100vh;
-      width: 100%;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #071923;
+}
 
-    .panel {
-      position: fixed;
-      z-index: 9999;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
+#map {
+  height: 100vh;
+  width: 100%;
+}
 
-    button {
-      padding: 10px 11px;
-      border: 0;
-      border-radius: 9px;
-      background: #087ea4;
-      color: white;
-      font-weight: bold;
-      font-size: 13px;
-    }
+/* TOP BUTTONS */
+.panel {
+  position: fixed;
+  z-index: 9999;
+  top: 10px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
 
-    #info {
-      position: fixed;
-      z-index: 9999;
-      bottom: 15px;
-      left: 10px;
-      right: 10px;
-      background: white;
-      padding: 12px;
-      border-radius: 10px;
-      font-weight: bold;
-    }
-  </style>
+button {
+  padding: 10px 11px;
+  border: 0;
+  border-radius: 9px;
+  background: #087ea4;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* DASHBOARD */
+.dashboard {
+  position: fixed;
+  z-index: 9999;
+  bottom: 12px;
+  left: 8px;
+  right: 8px;
+  background: rgba(5, 25, 35, 0.94);
+  color: white;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+}
+
+.box {
+  background: #0c3547;
+  border-radius: 9px;
+  padding: 8px;
+  text-align: center;
+}
+
+.label {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.value {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 3px;
+}
+</style>
 </head>
 
 <body>
 
 <div class="panel">
-  <button onclick="startTracking()">🚤 Start</button>
-  <button onclick="stopTracking()">⛔ Stop</button>
-  <button onclick="addWaypoint()">📌 Waypoint</button>
-  <button onclick="saveRoute()">💾 Save</button>
-  <button onclick="loadRoute()">📂 Load</button>
-  <button onclick="clearTrack()">🗑️ Clear</button>
+
+<button onclick="startTracking()">
+🚤 Start
+</button>
+
+<button onclick="stopTracking()">
+⛔ Stop
+</button>
+
+<button onclick="addWaypoint()">
+📌 Waypoint
+</button>
+
+<button onclick="saveRoute()">
+💾 Save
+</button>
+
+<button onclick="loadRoute()">
+📂 Load
+</button>
+
+<button onclick="clearTrack()">
+🗑️ Clear
+</button>
+
 </div>
 
 <div id="map"></div>
 
-<div id="info">
-  GPS: Waiting...<br>
-  Speed: 0 knots<br>
-  Distance: 0 m
+
+<div class="dashboard">
+
+<div class="title">
+🚤 SeaMate Pakistan
 </div>
+
+<div class="grid">
+
+<div class="box">
+<div class="label">SPEED</div>
+<div class="value" id="speed">0.0 kn</div>
+</div>
+
+<div class="box">
+<div class="label">HEADING</div>
+<div class="value" id="heading">--°</div>
+</div>
+
+<div class="box">
+<div class="label">LATITUDE</div>
+<div class="value" id="lat">--</div>
+</div>
+
+<div class="box">
+<div class="label">LONGITUDE</div>
+<div class="value" id="lon">--</div>
+</div>
+
+<div class="box">
+<div class="label">DISTANCE</div>
+<div class="value" id="distance">0 m</div>
+</div>
+
+<div class="box">
+<div class="label">NAUTICAL</div>
+<div class="value" id="nautical">0.00 NM</div>
+</div>
+
+</div>
+</div>
+
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
-const map = L.map("map").setView([24.85, 67.00], 10);
+/* MAP */
+
+const map =
+L.map("map").setView([24.85, 67.00], 10);
 
 
-// Normal map
-const streetMap = L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-    maxZoom: 19,
-    attribution: "© OpenStreetMap contributors"
-  }
+/* NORMAL MAP */
+
+const streetMap =
+L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
+maxZoom: 19,
+attribution: "© OpenStreetMap contributors"
+}
 ).addTo(map);
 
 
-// Nautical map
-const marineMap = L.tileLayer(
-  "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
-  {
-    maxZoom: 18,
-    opacity: 1,
-    attribution: "Nautical data © OpenSeaMap"
-  }
+/* NAUTICAL MAP */
+
+const marineMap =
+L.tileLayer(
+"https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+{
+maxZoom: 18,
+opacity: 1,
+attribution: "Nautical data © OpenSeaMap"
+}
 ).addTo(map);
 
 
-// Map layers
+/* LAYER SWITCH */
+
 L.control.layers(
-  {
-    "🗺️ Normal Map": streetMap
-  },
-  {
-    "⚓ Nautical Information": marineMap
-  }
+{
+"🗺️ Normal Map": streetMap
+},
+{
+"⚓ Nautical Information": marineMap
+}
 ).addTo(map);
 
+
+/* VARIABLES */
 
 let boat = null;
+
 let watchID = null;
 
 let boatPosition = null;
+
 let previousPosition = null;
 
 let totalDistance = 0;
 
 let trackPoints = [];
+
 let trackLine = null;
 
 let waypoints = [];
 
 
-// START GPS
+/* START TRACKING */
+
 function startTracking() {
 
-  if (!navigator.geolocation) {
-    alert("GPS available nahi hai.");
-    return;
-  }
+if (!navigator.geolocation) {
 
-  if (watchID !== null) {
-    return;
-  }
+alert("GPS available nahi hai.");
 
-  watchID = navigator.geolocation.watchPosition(
+return;
 
-    function(position) {
-
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-
-      const current = [lat, lon];
-
-      // Distance
-      if (previousPosition) {
-
-        const distance = map.distance(
-          previousPosition,
-          current
-        );
-
-        if (distance > 1) {
-          totalDistance += distance;
-        }
-      }
-
-      previousPosition = current;
-      boatPosition = current;
-
-
-      // Track point
-      trackPoints.push(current);
-
-
-      // Route line
-      if (!trackLine) {
-
-        trackLine = L.polyline(
-          trackPoints,
-          {
-            weight: 5
-          }
-        ).addTo(map);
-
-      } else {
-
-        trackLine.setLatLngs(trackPoints);
-
-      }
-
-
-      // Boat marker
-      if (!boat) {
-
-        boat = L.marker(current)
-          .addTo(map)
-          .bindPopup("🚤 Aapki Boat");
-
-      } else {
-
-        boat.setLatLng(current);
-
-      }
-
-
-      map.setView(current);
-
-
-      // Speed
-      let speedKnots = 0;
-
-      if (position.coords.speed !== null) {
-
-        speedKnots =
-          position.coords.speed * 1.94384;
-
-      }
-
-
-      document.getElementById("info").innerHTML =
-        "GPS: " +
-        lat.toFixed(5) +
-        ", " +
-        lon.toFixed(5) +
-        "<br>Speed: " +
-        speedKnots.toFixed(1) +
-        " knots" +
-        "<br>Distance: " +
-        totalDistance.toFixed(0) +
-        " m" +
-        "<br>Track Points: " +
-        trackPoints.length;
-
-    },
-
-    function(error) {
-
-      alert("GPS error: " + error.message);
-
-    },
-
-    {
-      enableHighAccuracy: true,
-      maximumAge: 1000,
-      timeout: 20000
-    }
-
-  );
 }
 
+if (watchID !== null) {
 
-// STOP
-function stopTracking() {
-
-  if (watchID !== null) {
-
-    navigator.geolocation.clearWatch(watchID);
-
-    watchID = null;
-  }
+return;
 
 }
 
 
-// WAYPOINT
-function addWaypoint() {
+watchID =
+navigator.geolocation.watchPosition(
 
-  if (!boatPosition) {
+function(position) {
 
-    alert("Pehle Start dabayein.");
+const lat =
+position.coords.latitude;
 
-    return;
-  }
+const lon =
+position.coords.longitude;
 
-  const waypoint = L.marker(boatPosition)
-    .addTo(map)
-    .bindPopup("📌 Saved Waypoint");
+const current =
+[lat, lon];
 
-  waypoints.push(waypoint);
+
+/* DISTANCE */
+
+if (previousPosition) {
+
+const distance =
+map.distance(
+previousPosition,
+current
+);
+
+if (distance > 1) {
+
+totalDistance += distance;
+
+}
 
 }
 
 
-// SAVE ROUTE
-function saveRoute() {
+previousPosition =
+current;
 
-  if (trackPoints.length < 2) {
+boatPosition =
+current;
 
-    alert("Pehle thoda route record karein.");
 
-    return;
-  }
+/* TRACK */
 
-  localStorage.setItem(
-    "seamateRoute",
-    JSON.stringify(trackPoints)
-  );
+trackPoints.push(current);
 
-  alert("✅ Route phone mein save ho gaya!");
+
+if (!trackLine) {
+
+trackLine =
+L.polyline(
+trackPoints,
+{
+weight: 5
+}
+).addTo(map);
+
+} else {
+
+trackLine.setLatLngs(
+trackPoints
+);
+
 }
 
 
-// LOAD ROUTE
-function loadRoute() {
+/* BOAT */
 
-  const saved =
-    localStorage.getItem("seamateRoute");
+if (!boat) {
 
-  if (!saved) {
+boat =
+L.marker(current)
+.addTo(map)
+.bindPopup(
+"🚤 Aapki Boat"
+);
 
-    alert("Koi saved route nahi mila.");
+} else {
 
-    return;
-  }
+boat.setLatLng(current);
 
-  const savedPoints =
-    JSON.parse(saved);
-
-  if (trackLine) {
-
-    map.removeLayer(trackLine);
-
-  }
-
-  trackLine = L.polyline(
-    savedPoints,
-    {
-      weight: 5
-    }
-  ).addTo(map);
-
-  map.fitBounds(trackLine.getBounds());
-
-  alert("📂 Saved route load ho gaya!");
 }
 
 
-// CLEAR CURRENT TRACK
-function clearTrack() {
+map.setView(current);
 
-  if (trackLine) {
 
-    map.removeLayer(trackLine);
+/* SPEED */
 
-    trackLine = null;
-  }
+let speedKnots = 0;
 
-  trackPoints = [];
+if (
+position.coords.speed !== null &&
+position.coords.speed >= 0
+) {
 
-  previousPosition = null;
+speedKnots =
+position.coords.speed *
+1.94384;
 
-  totalDistance = 0;
-
-  document.getElementById("info").innerHTML =
-    "GPS: Ready<br>" +
-    "Speed: 0 knots<br>" +
-    "Distance: 0 m";
 }
 
-</script>
 
-</body>
-</html>
+/* HEADING */
+
+let heading =
+position
