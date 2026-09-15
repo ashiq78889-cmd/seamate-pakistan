@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SeaMate Pakistan</title>
+</head>
+<body>
+  <h1>🚤 SeaMate Pakistan</h1>
+  <p>Marine Navigation App</p>
+  <button onclick="getLocation()">📍 My Location</button>
+  <p id="location">GPS location yahan show hogi.</p>
+
+  <script>
+    function getLocation() {
+      if (!navigator.geolocation) {
+        document.getElementById("location").innerText =
+          "GPS supported nahi hai.";
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          document.getElementById("location").innerText =
+            "Latitude: " + lat + "\nLongitude: " + lon;
+        },
+        function() {
+          document.getElementById("location").innerText =
+            "GPS permission allow karein.";
+        }
+      );
+    }
+  </script>
+</body>
+</html>
