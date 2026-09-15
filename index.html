@@ -5,12 +5,12 @@
   <title>SeaMate Pakistan</title>
 
   <link rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
   <style>
     body {
       margin: 0;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
     }
 
     #map {
@@ -18,15 +18,34 @@
       width: 100%;
     }
 
-    #gps {
+    .panel {
       position: fixed;
       z-index: 9999;
-      top: 15px;
-      right: 15px;
-      padding: 15px;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px;
+      border: 0;
+      border-radius: 9px;
       background: #087ea4;
       color: white;
-      border: 0;
+      font-weight: bold;
+    }
+
+    #info {
+      position: fixed;
+      z-index: 9999;
+      bottom: 15px;
+      left: 10px;
+      right: 10px;
+      background: white;
+      padding: 10px;
       border-radius: 10px;
       font-weight: bold;
     }
@@ -35,9 +54,18 @@
 
 <body>
 
-<button id="gps" onclick="getGPS()">📍 My Boat</button>
+<div class="panel">
+  <button onclick="getGPS()">📍 My Boat</button>
+  <button onclick="addWaypoint()">📌 Waypoint</button>
+  <button onclick="clearWaypoints()">🗑️ Clear</button>
+</div>
 
 <div id="map"></div>
+
+<div id="info">
+  GPS: Waiting...<br>
+  Distance: 0 m
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -49,16 +77,20 @@ L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
     maxZoom: 19,
-    attribution: "© OpenStreetMap"
+    attribution: "© OpenStreetMap contributors"
   }
 ).addTo(map);
 
-let boat;
+let boat = null;
+let boatPosition = null;
+let waypoints = [];
 
+
+// GPS
 function getGPS() {
 
   if (!navigator.geolocation) {
-    alert("Is mobile mein GPS available nahi hai.");
+    alert("GPS available nahi hai.");
     return;
   }
 
@@ -68,6 +100,8 @@ function getGPS() {
 
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
+
+      boatPosition = [lat, lon];
 
       if (boat) {
         map.removeLayer(boat);
@@ -79,15 +113,17 @@ function getGPS() {
         .openPopup();
 
       map.setView([lat, lon], 16);
+
+      document.getElementById("info").innerHTML =
+        "GPS: " +
+        lat.toFixed(5) +
+        ", " +
+        lon.toFixed(5) +
+        "<br>Distance: 0 m";
     },
 
     function(error) {
-
-      alert(
-        "GPS permission allow karein.\nError: " +
-        error.message
-      );
-
+      alert("GPS permission allow karein.");
     },
 
     {
@@ -96,6 +132,49 @@ function getGPS() {
       maximumAge: 0
     }
   );
+}
+
+
+// Add waypoint
+function addWaypoint() {
+
+  if (!boatPosition) {
+    alert("Pehle 📍 My Boat dabayein.");
+    return;
+  }
+
+  const waypoint = L.marker(boatPosition)
+    .addTo(map)
+    .bindPopup("📌 Waypoint");
+
+  waypoints.push(waypoint);
+
+  const distance = map.distance(
+    boatPosition,
+    waypoint.getLatLng()
+  );
+
+  document.getElementById("info").innerHTML =
+    "GPS: " +
+    boatPosition[0].toFixed(5) +
+    ", " +
+    boatPosition[1].toFixed(5) +
+    "<br>Waypoint saved: " +
+    waypoints.length;
+}
+
+
+// Clear waypoints
+function clearWaypoints() {
+
+  waypoints.forEach(function(marker) {
+    map.removeLayer(marker);
+  });
+
+  waypoints = [];
+
+  document.getElementById("info").innerHTML =
+    "GPS: Ready<br>Waypoints cleared";
 }
 
 </script>
