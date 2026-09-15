@@ -75,13 +75,38 @@
 
 const map = L.map("map").setView([24.85, 67.00], 10);
 
-L.tileLayer(
+
+// Normal map
+const streetMap = L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
     maxZoom: 19,
     attribution: "© OpenStreetMap contributors"
   }
 ).addTo(map);
+
+
+// Marine / nautical layer
+const marineMap = L.tileLayer(
+  "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+  {
+    maxZoom: 18,
+    opacity: 1,
+    attribution: "Nautical data © OpenSeaMap"
+  }
+).addTo(map);
+
+
+// Layer control
+L.control.layers(
+  {
+    "🗺️ Normal Map": streetMap
+  },
+  {
+    "⚓ Nautical Information": marineMap
+  }
+).addTo(map);
+
 
 let boat = null;
 let watchID = null;
@@ -91,7 +116,7 @@ let totalDistance = 0;
 let waypoints = [];
 
 
-// START TRACKING
+// GPS TRACKING
 function startTracking() {
 
   if (!navigator.geolocation) {
@@ -112,7 +137,6 @@ function startTracking() {
 
       const current = [lat, lon];
 
-      // Calculate distance
       if (previousPosition) {
 
         const distance = map.distance(
@@ -128,7 +152,7 @@ function startTracking() {
       previousPosition = current;
       boatPosition = current;
 
-      // Boat marker
+
       if (!boat) {
 
         boat = L.marker(current)
@@ -141,9 +165,10 @@ function startTracking() {
 
       }
 
+
       map.setView(current);
 
-      // Speed
+
       let speedKnots = 0;
 
       if (position.coords.speed !== null) {
@@ -152,6 +177,7 @@ function startTracking() {
           position.coords.speed * 1.94384;
 
       }
+
 
       document.getElementById("info").innerHTML =
         "GPS: " +
@@ -186,7 +212,7 @@ function startTracking() {
 }
 
 
-// STOP TRACKING
+// STOP
 function stopTracking() {
 
   if (watchID !== null) {
@@ -194,7 +220,6 @@ function stopTracking() {
     navigator.geolocation.clearWatch(watchID);
 
     watchID = null;
-
   }
 
 }
@@ -219,7 +244,7 @@ function addWaypoint() {
 }
 
 
-// CLEAR
+// CLEAR WAYPOINTS
 function clearWaypoints() {
 
   waypoints.forEach(function(marker) {
