@@ -30,12 +30,13 @@
     }
 
     button {
-      padding: 11px;
+      padding: 10px 11px;
       border: 0;
       border-radius: 9px;
       background: #087ea4;
       color: white;
       font-weight: bold;
+      font-size: 13px;
     }
 
     #info {
@@ -55,10 +56,12 @@
 <body>
 
 <div class="panel">
-  <button onclick="startTracking()">🚤 Start Track</button>
+  <button onclick="startTracking()">🚤 Start</button>
   <button onclick="stopTracking()">⛔ Stop</button>
   <button onclick="addWaypoint()">📌 Waypoint</button>
-  <button onclick="clearTrack()">🗑️ Clear Track</button>
+  <button onclick="saveRoute()">💾 Save</button>
+  <button onclick="loadRoute()">📂 Load</button>
+  <button onclick="clearTrack()">🗑️ Clear</button>
 </div>
 
 <div id="map"></div>
@@ -86,7 +89,7 @@ const streetMap = L.tileLayer(
 ).addTo(map);
 
 
-// Nautical layer
+// Nautical map
 const marineMap = L.tileLayer(
   "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
   {
@@ -97,7 +100,7 @@ const marineMap = L.tileLayer(
 ).addTo(map);
 
 
-// Layer switch
+// Map layers
 L.control.layers(
   {
     "🗺️ Normal Map": streetMap
@@ -122,7 +125,7 @@ let trackLine = null;
 let waypoints = [];
 
 
-// START TRACKING
+// START GPS
 function startTracking() {
 
   if (!navigator.geolocation) {
@@ -143,7 +146,7 @@ function startTracking() {
 
       const current = [lat, lon];
 
-      // Distance calculation
+      // Distance
       if (previousPosition) {
 
         const distance = map.distance(
@@ -160,11 +163,11 @@ function startTracking() {
       boatPosition = current;
 
 
-      // Add point to track
+      // Track point
       trackPoints.push(current);
 
 
-      // Create route line
+      // Route line
       if (!trackLine) {
 
         trackLine = L.polyline(
@@ -195,7 +198,6 @@ function startTracking() {
       }
 
 
-      // Move map
       map.setView(current);
 
 
@@ -228,10 +230,7 @@ function startTracking() {
 
     function(error) {
 
-      alert(
-        "GPS error: " +
-        error.message
-      );
+      alert("GPS error: " + error.message);
 
     },
 
@@ -245,7 +244,7 @@ function startTracking() {
 }
 
 
-// STOP TRACKING
+// STOP
 function stopTracking() {
 
   if (watchID !== null) {
@@ -263,21 +262,75 @@ function addWaypoint() {
 
   if (!boatPosition) {
 
-    alert("Pehle Start Track dabayein.");
+    alert("Pehle Start dabayein.");
 
     return;
   }
 
   const waypoint = L.marker(boatPosition)
     .addTo(map)
-    .bindPopup("📌 Waypoint");
+    .bindPopup("📌 Saved Waypoint");
 
   waypoints.push(waypoint);
 
 }
 
 
-// CLEAR TRACK
+// SAVE ROUTE
+function saveRoute() {
+
+  if (trackPoints.length < 2) {
+
+    alert("Pehle thoda route record karein.");
+
+    return;
+  }
+
+  localStorage.setItem(
+    "seamateRoute",
+    JSON.stringify(trackPoints)
+  );
+
+  alert("✅ Route phone mein save ho gaya!");
+}
+
+
+// LOAD ROUTE
+function loadRoute() {
+
+  const saved =
+    localStorage.getItem("seamateRoute");
+
+  if (!saved) {
+
+    alert("Koi saved route nahi mila.");
+
+    return;
+  }
+
+  const savedPoints =
+    JSON.parse(saved);
+
+  if (trackLine) {
+
+    map.removeLayer(trackLine);
+
+  }
+
+  trackLine = L.polyline(
+    savedPoints,
+    {
+      weight: 5
+    }
+  ).addTo(map);
+
+  map.fitBounds(trackLine.getBounds());
+
+  alert("📂 Saved route load ho gaya!");
+}
+
+
+// CLEAR CURRENT TRACK
 function clearTrack() {
 
   if (trackLine) {
@@ -297,7 +350,6 @@ function clearTrack() {
     "GPS: Ready<br>" +
     "Speed: 0 knots<br>" +
     "Distance: 0 m";
-
 }
 
 </script>
