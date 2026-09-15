@@ -45,7 +45,7 @@
       left: 10px;
       right: 10px;
       background: white;
-      padding: 10px;
+      padding: 12px;
       border-radius: 10px;
       font-weight: bold;
     }
@@ -55,7 +55,8 @@
 <body>
 
 <div class="panel">
-  <button onclick="getGPS()">📍 My Boat</button>
+  <button onclick="startTracking()">🚤 Start Tracking</button>
+  <button onclick="stopTracking()">⛔ Stop</button>
   <button onclick="addWaypoint()">📌 Waypoint</button>
   <button onclick="clearWaypoints()">🗑️ Clear</button>
 </div>
@@ -64,6 +65,7 @@
 
 <div id="info">
   GPS: Waiting...<br>
+  Speed: 0 knots<br>
   Distance: 0 m
 </div>
 
@@ -82,64 +84,129 @@ L.tileLayer(
 ).addTo(map);
 
 let boat = null;
+let watchID = null;
 let boatPosition = null;
+let previousPosition = null;
+let totalDistance = 0;
 let waypoints = [];
 
 
-// GPS
-function getGPS() {
+// START TRACKING
+function startTracking() {
 
   if (!navigator.geolocation) {
     alert("GPS available nahi hai.");
     return;
   }
 
-  navigator.geolocation.getCurrentPosition(
+  if (watchID !== null) {
+    return;
+  }
+
+  watchID = navigator.geolocation.watchPosition(
 
     function(position) {
 
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
 
-      boatPosition = [lat, lon];
+      const current = [lat, lon];
 
-      if (boat) {
-        map.removeLayer(boat);
+      // Calculate distance
+      if (previousPosition) {
+
+        const distance = map.distance(
+          previousPosition,
+          current
+        );
+
+        if (distance > 1) {
+          totalDistance += distance;
+        }
       }
 
-      boat = L.marker([lat, lon])
-        .addTo(map)
-        .bindPopup("🚤 Aapki Boat")
-        .openPopup();
+      previousPosition = current;
+      boatPosition = current;
 
-      map.setView([lat, lon], 16);
+      // Boat marker
+      if (!boat) {
+
+        boat = L.marker(current)
+          .addTo(map)
+          .bindPopup("🚤 Aapki Boat");
+
+      } else {
+
+        boat.setLatLng(current);
+
+      }
+
+      map.setView(current);
+
+      // Speed
+      let speedKnots = 0;
+
+      if (position.coords.speed !== null) {
+
+        speedKnots =
+          position.coords.speed * 1.94384;
+
+      }
 
       document.getElementById("info").innerHTML =
         "GPS: " +
         lat.toFixed(5) +
         ", " +
         lon.toFixed(5) +
-        "<br>Distance: 0 m";
+        "<br>Speed: " +
+        speedKnots.toFixed(1) +
+        " knots" +
+        "<br>Distance: " +
+        totalDistance.toFixed(0) +
+        " m";
+
     },
 
     function(error) {
-      alert("GPS permission allow karein.");
+
+      alert(
+        "GPS error: " +
+        error.message
+      );
+
     },
 
     {
       enableHighAccuracy: true,
-      timeout: 20000,
-      maximumAge: 0
+      maximumAge: 1000,
+      timeout: 20000
     }
+
   );
 }
 
 
-// Add waypoint
+// STOP TRACKING
+function stopTracking() {
+
+  if (watchID !== null) {
+
+    navigator.geolocation.clearWatch(watchID);
+
+    watchID = null;
+
+  }
+
+}
+
+
+// WAYPOINT
 function addWaypoint() {
 
   if (!boatPosition) {
-    alert("Pehle 📍 My Boat dabayein.");
+
+    alert("Pehle Start Tracking dabayein.");
+
     return;
   }
 
@@ -149,32 +216,20 @@ function addWaypoint() {
 
   waypoints.push(waypoint);
 
-  const distance = map.distance(
-    boatPosition,
-    waypoint.getLatLng()
-  );
-
-  document.getElementById("info").innerHTML =
-    "GPS: " +
-    boatPosition[0].toFixed(5) +
-    ", " +
-    boatPosition[1].toFixed(5) +
-    "<br>Waypoint saved: " +
-    waypoints.length;
 }
 
 
-// Clear waypoints
+// CLEAR
 function clearWaypoints() {
 
   waypoints.forEach(function(marker) {
+
     map.removeLayer(marker);
+
   });
 
   waypoints = [];
 
-  document.getElementById("info").innerHTML =
-    "GPS: Ready<br>Waypoints cleared";
 }
 
 </script>
