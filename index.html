@@ -30,7 +30,7 @@
     }
 
     button {
-      padding: 12px;
+      padding: 11px;
       border: 0;
       border-radius: 9px;
       background: #087ea4;
@@ -55,10 +55,10 @@
 <body>
 
 <div class="panel">
-  <button onclick="startTracking()">🚤 Start Tracking</button>
+  <button onclick="startTracking()">🚤 Start Track</button>
   <button onclick="stopTracking()">⛔ Stop</button>
   <button onclick="addWaypoint()">📌 Waypoint</button>
-  <button onclick="clearWaypoints()">🗑️ Clear</button>
+  <button onclick="clearTrack()">🗑️ Clear Track</button>
 </div>
 
 <div id="map"></div>
@@ -86,7 +86,7 @@ const streetMap = L.tileLayer(
 ).addTo(map);
 
 
-// Marine / nautical layer
+// Nautical layer
 const marineMap = L.tileLayer(
   "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
   {
@@ -97,7 +97,7 @@ const marineMap = L.tileLayer(
 ).addTo(map);
 
 
-// Layer control
+// Layer switch
 L.control.layers(
   {
     "🗺️ Normal Map": streetMap
@@ -110,13 +110,19 @@ L.control.layers(
 
 let boat = null;
 let watchID = null;
+
 let boatPosition = null;
 let previousPosition = null;
+
 let totalDistance = 0;
+
+let trackPoints = [];
+let trackLine = null;
+
 let waypoints = [];
 
 
-// GPS TRACKING
+// START TRACKING
 function startTracking() {
 
   if (!navigator.geolocation) {
@@ -137,6 +143,7 @@ function startTracking() {
 
       const current = [lat, lon];
 
+      // Distance calculation
       if (previousPosition) {
 
         const distance = map.distance(
@@ -153,6 +160,28 @@ function startTracking() {
       boatPosition = current;
 
 
+      // Add point to track
+      trackPoints.push(current);
+
+
+      // Create route line
+      if (!trackLine) {
+
+        trackLine = L.polyline(
+          trackPoints,
+          {
+            weight: 5
+          }
+        ).addTo(map);
+
+      } else {
+
+        trackLine.setLatLngs(trackPoints);
+
+      }
+
+
+      // Boat marker
       if (!boat) {
 
         boat = L.marker(current)
@@ -166,9 +195,11 @@ function startTracking() {
       }
 
 
+      // Move map
       map.setView(current);
 
 
+      // Speed
       let speedKnots = 0;
 
       if (position.coords.speed !== null) {
@@ -189,7 +220,9 @@ function startTracking() {
         " knots" +
         "<br>Distance: " +
         totalDistance.toFixed(0) +
-        " m";
+        " m" +
+        "<br>Track Points: " +
+        trackPoints.length;
 
     },
 
@@ -212,7 +245,7 @@ function startTracking() {
 }
 
 
-// STOP
+// STOP TRACKING
 function stopTracking() {
 
   if (watchID !== null) {
@@ -230,7 +263,7 @@ function addWaypoint() {
 
   if (!boatPosition) {
 
-    alert("Pehle Start Tracking dabayein.");
+    alert("Pehle Start Track dabayein.");
 
     return;
   }
@@ -244,16 +277,26 @@ function addWaypoint() {
 }
 
 
-// CLEAR WAYPOINTS
-function clearWaypoints() {
+// CLEAR TRACK
+function clearTrack() {
 
-  waypoints.forEach(function(marker) {
+  if (trackLine) {
 
-    map.removeLayer(marker);
+    map.removeLayer(trackLine);
 
-  });
+    trackLine = null;
+  }
 
-  waypoints = [];
+  trackPoints = [];
+
+  previousPosition = null;
+
+  totalDistance = 0;
+
+  document.getElementById("info").innerHTML =
+    "GPS: Ready<br>" +
+    "Speed: 0 knots<br>" +
+    "Distance: 0 m";
 
 }
 
