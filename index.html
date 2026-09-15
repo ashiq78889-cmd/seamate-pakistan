@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#062532">
+
+<head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>SeaMate Pakistan</title>
 
-<link
-rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
+<meta name="theme-color"
+content="#062532">
+
+<meta name="description"
+content="SeaMate Pakistan marine GPS and route app">
+
+<link rel="manifest"
+href="manifest.json">
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 
@@ -32,8 +42,6 @@ width:100%;
 height:100vh;
 }
 
-/* TOP BUTTONS */
-
 .topbar{
 position:fixed;
 top:10px;
@@ -45,20 +53,25 @@ display:flex;
 flex-wrap:wrap;
 gap:6px;
 
-background:rgba(4,28,38,.92);
+background:rgba(4,28,38,.94);
+
 padding:7px;
+
 border-radius:12px;
 }
 
 button{
 border:0;
 border-radius:8px;
-padding:11px 12px;
+
+padding:10px 11px;
 
 background:#087ea4;
+
 color:white;
 
-font-size:13px;
+font-size:12px;
+
 font-weight:bold;
 }
 
@@ -66,9 +79,8 @@ button:active{
 transform:scale(.96);
 }
 
-/* DASHBOARD */
-
 .dashboard{
+
 position:fixed;
 
 left:8px;
@@ -77,7 +89,8 @@ bottom:10px;
 
 z-index:9999;
 
-background:rgba(4,35,48,.95);
+background:rgba(4,35,48,.96);
+
 color:white;
 
 border-radius:14px;
@@ -88,66 +101,91 @@ box-shadow:0 3px 15px rgba(0,0,0,.4);
 }
 
 .title{
+
 text-align:center;
+
 font-size:15px;
+
 font-weight:bold;
+
 margin-bottom:7px;
 }
 
 .grid{
+
 display:grid;
-grid-template-columns:repeat(2,1fr);
+
+grid-template-columns:
+repeat(2,1fr);
+
 gap:6px;
 }
 
 .box{
+
 background:#0d4052;
+
 border-radius:8px;
+
 padding:7px;
+
 text-align:center;
 }
 
 .label{
+
 font-size:10px;
+
 opacity:.8;
 }
 
 .value{
+
 font-size:14px;
+
 font-weight:bold;
+
 margin-top:3px;
 }
 
-/* LEAFLET */
-
-.leaflet-control-layers{
-font-size:12px;
-}
-
 </style>
-</head><script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
-</script>
 
-<>
+</head>
+
+<body>
+
 
 <!-- BUTTONS -->
 
 <div class="topbar">
 
-<button id="startBtn">🚤 Start</button>
+<button id="startBtn">
+🚤 Start
+</button>
 
-<button id="stopBtn">⛔ Stop</button>
+<button id="stopBtn">
+⛔ Stop
+</button>
 
-<button id="waypointBtn">📌 Waypoint</button>
+<button id="waypointBtn">
+📌 Waypoint
+</button>
 
-<button id="saveBtn">💾 Save</button>
+<button id="saveBtn">
+💾 Save
+</button>
 
-<button id="loadBtn">📂 Load</button>
+<button id="loadBtn">
+📂 Load
+</button>
 
-<button id="clearBtn">🗑️ Clear</button>
+<button id="clearBtn">
+🗑️ Clear
+</button>
+
+<button id="downloadBtn">
+📥 Download Area
+</button>
 
 </div>
 
@@ -168,31 +206,77 @@ if ("serviceWorker" in navigator) {
 <div class="grid">
 
 <div class="box">
-<div class="label">GPS</div>
-<div class="value" id="gps">Waiting...</div>
+
+<div class="label">
+GPS
 </div>
+
+<div class="value"
+id="gps">
+
+Waiting...
+
+</div>
+
+</div>
+
 
 <div class="box">
-<div class="label">SPEED</div>
-<div class="value" id="speed">0.0 kn</div>
+
+<div class="label">
+SPEED
 </div>
+
+<div class="value"
+id="speed">
+
+0.0 kn
+
+</div>
+
+</div>
+
 
 <div class="box">
-<div class="label">HEADING</div>
-<div class="value" id="heading">--</div>
+
+<div class="label">
+HEADING
 </div>
+
+<div class="value"
+id="heading">
+
+--
+
+</div>
+
+</div>
+
 
 <div class="box">
-<div class="label">DISTANCE</div>
-<div class="value" id="distance">0 m</div>
+
+<div class="label">
+DISTANCE
+</div>
+
+<div class="value"
+id="distance">
+
+0 m
+
 </div>
 
 </div>
 
 </div>
 
+</div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
 
 <script>
 
@@ -200,7 +284,9 @@ if ("serviceWorker" in navigator) {
    MAP
 ========================= */
 
-const map = L.map("map").setView(
+const map =
+L.map("map")
+.setView(
 [24.85,67.00],
 10
 );
@@ -208,39 +294,58 @@ const map = L.map("map").setView(
 
 /* NORMAL MAP */
 
-const streetMap = L.tileLayer(
+const streetMap =
+L.tileLayer(
+
 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
 {
 maxZoom:19,
-attribution:"© OpenStreetMap"
+
+attribution:
+"© OpenStreetMap"
 }
+
 ).addTo(map);
 
 
 /* NAUTICAL MAP */
 
-const seaMap = L.tileLayer(
+const seaMap =
+L.tileLayer(
+
 "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+
 {
 maxZoom:18,
+
 opacity:.9,
-attribution:"© OpenSeaMap contributors"
+
+attribution:
+"© OpenSeaMap contributors"
 }
+
 ).addTo(map);
 
 
-/* MAP LAYERS */
+/* LAYERS */
 
 L.control.layers(
+
 {
-"🗺️ Normal Map":streetMap
+"🗺️ Normal Map":
+streetMap
 },
+
 {
-"⚓ Nautical Information":seaMap
+"⚓ Nautical Information":
+seaMap
 },
+
 {
 collapsed:true
 }
+
 ).addTo(map);
 
 
@@ -273,7 +378,9 @@ function startGPS(){
 
 if(!navigator.geolocation){
 
-alert("Is device par GPS available nahi hai.");
+alert(
+"GPS available nahi hai."
+);
 
 return;
 
@@ -287,7 +394,9 @@ return;
 }
 
 
-document.getElementById("gps").innerText =
+document.getElementById(
+"gps"
+).innerText =
 "Finding GPS...";
 
 
@@ -305,14 +414,11 @@ position.coords.longitude;
 const current =
 [lat,lon];
 
-
 boatPosition =
 current;
 
 
-/* =========================
-   DISTANCE
-========================= */
+/* DISTANCE */
 
 if(lastPosition){
 
@@ -324,20 +430,18 @@ current
 
 if(distance > 1){
 
-totalDistance += distance;
+totalDistance +=
+distance;
 
 }
 
 }
-
 
 lastPosition =
 current;
 
 
-/* =========================
-   ROUTE
-========================= */
+/* ROUTE */
 
 route.push(current);
 
@@ -346,44 +450,47 @@ if(!routeLine){
 
 routeLine =
 L.polyline(
+
 route,
+
 {
 weight:5
 }
+
 ).addTo(map);
 
 }else{
 
-routeLine.setLatLngs(route);
+routeLine.setLatLngs(
+route
+);
 
 }
 
 
-/* =========================
-   BOAT MARKER
-========================= */
+/* BOAT */
 
 if(!boatMarker){
 
 boatMarker =
 L.marker(current)
 .addTo(map)
-.bindPopup("🚤 Aapki Boat");
+.bindPopup(
+"🚤 Aapki Boat"
+);
 
 }else{
 
-boatMarker.setLatLng(current);
+boatMarker.setLatLng(
+current
+);
 
 }
 
 
-/* =========================
-   SPEED
-========================= */
+/* SPEED */
 
-let speed =
-0;
-
+let speed = 0;
 
 if(
 position.coords.speed !== null &&
@@ -397,47 +504,57 @@ position.coords.speed *
 }
 
 
-/* =========================
-   HEADING
-========================= */
+/* HEADING */
 
-let heading =
+const heading =
 position.coords.heading;
 
 
-/* =========================
-   DASHBOARD
-========================= */
+/* DISPLAY */
 
-document.getElementById("gps").innerText =
-lat.toFixed(5)+
-", "+
+document.getElementById(
+"gps"
+).innerText =
+
+lat.toFixed(5) +
+", " +
 lon.toFixed(5);
 
 
-document.getElementById("speed").innerText =
-speed.toFixed(1)+
+document.getElementById(
+"speed"
+).innerText =
+
+speed.toFixed(1) +
 " kn";
 
 
-document.getElementById("heading").innerText =
+document.getElementById(
+"heading"
+).innerText =
+
 heading === null
 ?
 "--"
 :
-heading.toFixed(0)+"°";
+heading.toFixed(0) +
+"°";
 
 
-document.getElementById("distance").innerText =
-totalDistance.toFixed(0)+
+document.getElementById(
+"distance"
+).innerText =
+
+totalDistance.toFixed(0) +
 " m";
 
 
-/* MOVE MAP */
-
 map.setView(
 current,
-Math.max(map.getZoom(),14)
+Math.max(
+map.getZoom(),
+14
+)
 );
 
 },
@@ -445,7 +562,7 @@ Math.max(map.getZoom(),14)
 function(error){
 
 alert(
-"GPS Error: "+
+"GPS Error: " +
 error.message
 );
 
@@ -453,7 +570,9 @@ error.message
 
 {
 enableHighAccuracy:true,
+
 maximumAge:1000,
+
 timeout:20000
 }
 
@@ -463,7 +582,7 @@ timeout:20000
 
 
 /* =========================
-   STOP GPS
+   STOP
 ========================= */
 
 function stopGPS(){
@@ -476,7 +595,9 @@ watchID
 
 watchID = null;
 
-document.getElementById("gps").innerText =
+document.getElementById(
+"gps"
+).innerText =
 "GPS stopped";
 
 }
@@ -507,14 +628,20 @@ boatPosition
 )
 .addTo(map)
 .bindPopup(
-"📌 SeaMate Waypoint<br>"+
-boatPosition[0].toFixed(5)+
-", "+
+
+"📌 Waypoint<br>" +
+
+boatPosition[0].toFixed(5) +
+", " +
+
 boatPosition[1].toFixed(5)
+
 );
 
 
-waypoints.push(marker);
+waypoints.push(
+marker
+);
 
 marker.openPopup();
 
@@ -522,7 +649,7 @@ marker.openPopup();
 
 
 /* =========================
-   SAVE ROUTE
+   SAVE
 ========================= */
 
 function saveRoute(){
@@ -530,7 +657,7 @@ function saveRoute(){
 if(route.length < 2){
 
 alert(
-"Pehle GPS se route record karein."
+"Pehle GPS route record karein."
 );
 
 return;
@@ -539,20 +666,23 @@ return;
 
 
 localStorage.setItem(
+
 "SeaMateRoute",
+
 JSON.stringify(route)
+
 );
 
 
 alert(
-"✅ Route successfully save ho gaya."
+"✅ Route save ho gaya."
 );
 
 }
 
 
 /* =========================
-   LOAD ROUTE
+   LOAD
 ========================= */
 
 function loadRoute(){
@@ -589,10 +719,13 @@ routeLine
 
 routeLine =
 L.polyline(
+
 savedRoute,
+
 {
 weight:5
 }
+
 ).addTo(map);
 
 
@@ -602,14 +735,14 @@ routeLine.getBounds()
 
 
 alert(
-"📂 Saved route load ho gaya."
+"📂 Route load ho gaya."
 );
 
 }
 
 
 /* =========================
-   CLEAR ROUTE
+   CLEAR
 ========================= */
 
 function clearRoute(){
@@ -623,7 +756,6 @@ routeLine
 routeLine = null;
 
 }
-
 
 route = [];
 
@@ -646,11 +778,221 @@ alert(
 
 
 /* =========================
-   BUTTON EVENTS
+   LAT/LON TO TILE
+========================= */
+
+function latLonToTile(
+lat,
+lon,
+zoom
+){
+
+const latRad =
+lat *
+Math.PI /
+180;
+
+const n =
+Math.pow(
+2,
+zoom
+);
+
+const x =
+Math.floor(
+(lon + 180) /
+360 *
+n
+);
+
+const y =
+Math.floor(
+
+(
+1 -
+
+Math.asinh(
+Math.tan(latRad)
+) /
+Math.PI
+
+) /
+2 *
+n
+
+);
+
+return {
+x:x,
+y:y
+};
+
+}
+
+
+/* =========================
+   DOWNLOAD MAP AREA
+========================= */
+
+async function
+downloadMapArea(){
+
+if(!("caches" in window)){
+
+alert(
+"Offline storage supported nahi."
+);
+
+return;
+
+}
+
+
+const center =
+map.getCenter();
+
+
+const zoom =
+Math.min(
+map.getZoom(),
+15
+);
+
+
+const centerTile =
+latLonToTile(
+
+center.lat,
+
+center.lng,
+
+zoom
+
+);
+
+
+const cache =
+await caches.open(
+"seamate-offline-v2"
+);
+
+
+const urls = [];
+
+
+/*
+
+Download a small area
+around current map.
+
+*/
+
+for(
+
+let x =
+centerTile.x - 2;
+
+x <=
+centerTile.x + 2;
+
+x++
+
+){
+
+for(
+
+let y =
+centerTile.y - 2;
+
+y <=
+centerTile.y + 2;
+
+y++
+
+){
+
+urls.push(
+
+`https://tile.openstreetmap.org/${zoom}/${x}/${y}.png`
+
+);
+
+urls.push(
+
+`https://tiles.openseamap.org/seamark/${zoom}/${x}/${y}.png`
+
+);
+
+}
+
+}
+
+
+alert(
+"📥 Map download start ho raha hai..."
+);
+
+
+let done = 0;
+
+
+for(
+const url of urls
+){
+
+try{
+
+const response =
+await fetch(url);
+
+
+if(response.ok){
+
+await cache.put(
+
+new Request(url),
+
+response.clone()
+
+);
+
+}
+
+}catch(error){
+
+console.log(
+"Tile failed:",
+url
+);
+
+}
+
+
+done++;
+
+}
+
+
+alert(
+
+"✅ Map area offline save ho gaya.\n\n" +
+
+"Tiles processed: " +
+done
+
+);
+
+}
+
+
+/* =========================
+   BUTTONS
 ========================= */
 
 document
-.getElementById("startBtn")
+.getElementById(
+"startBtn"
+)
 .addEventListener(
 "click",
 startGPS
@@ -658,7 +1000,9 @@ startGPS
 
 
 document
-.getElementById("stopBtn")
+.getElementById(
+"stopBtn"
+)
 .addEventListener(
 "click",
 stopGPS
@@ -666,7 +1010,9 @@ stopGPS
 
 
 document
-.getElementById("waypointBtn")
+.getElementById(
+"waypointBtn"
+)
 .addEventListener(
 "click",
 addWaypoint
@@ -674,7 +1020,9 @@ addWaypoint
 
 
 document
-.getElementById("saveBtn")
+.getElementById(
+"saveBtn"
+)
 .addEventListener(
 "click",
 saveRoute
@@ -682,7 +1030,9 @@ saveRoute
 
 
 document
-.getElementById("loadBtn")
+.getElementById(
+"loadBtn"
+)
 .addEventListener(
 "click",
 loadRoute
@@ -690,13 +1040,41 @@ loadRoute
 
 
 document
-.getElementById("clearBtn")
+.getElementById(
+"clearBtn"
+)
 .addEventListener(
 "click",
 clearRoute
 );
 
+
+document
+.getElementById(
+"downloadBtn"
+)
+.addEventListener(
+"click",
+downloadMapArea
+);
+
+
+/* =========================
+   SERVICE WORKER
+========================= */
+
+if(
+"serviceWorker" in navigator
+){
+
+navigator.serviceWorker.register(
+"service-worker.js"
+);
+
+}
+
 </script>
 
 </body>
+
 </html>
