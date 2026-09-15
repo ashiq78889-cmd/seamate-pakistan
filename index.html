@@ -1,183 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>SeaMate Pakistan</title>
 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #071923;
-      color: white;
-    }
-
-    header {
-      height: 60px;
-      background: #0b3042;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 21px;
-      font-weight: bold;
+      font-family: Arial;
     }
 
     #map {
-      height: calc(100vh - 125px);
+      height: 100vh;
       width: 100%;
     }
 
-    .controls {
-      height: 65px;
-      background: #0b3042;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      padding: 8px;
-    }
-
-    button {
-      border: none;
-      border-radius: 8px;
-      padding: 11px 14px;
-      background: #168aad;
+    #gps {
+      position: fixed;
+      z-index: 9999;
+      top: 15px;
+      right: 15px;
+      padding: 15px;
+      background: #087ea4;
       color: white;
+      border: 0;
+      border-radius: 10px;
       font-weight: bold;
-      font-size: 14px;
-    }
-
-    button:active {
-      transform: scale(0.96);
-    }
-
-    #status {
-      position: absolute;
-      z-index: 1000;
-      top: 70px;
-      left: 10px;
-      background: white;
-      color: #111;
-      padding: 8px 10px;
-      border-radius: 7px;
-      font-size: 13px;
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  🚤 SeaMate Pakistan
-</header>
-
-<div id="status">GPS: Waiting...</div>
+<button id="gps" onclick="getGPS()">📍 My Boat</button>
 
 <div id="map"></div>
-
-<div class="controls">
-  <button onclick="findBoat()">📍 My Boat</button>
-  <button onclick="zoomIn()">＋</button>
-  <button onclick="zoomOut()">−</button>
-</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
-  // Pakistan coast starting position
-  const map = L.map("map").setView([24.85, 66.99], 9);
+const map = L.map("map").setView([24.85, 67.00], 10);
 
-  // OpenStreetMap base map
-  L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      maxZoom: 19,
-      attribution: "&copy; OpenStreetMap contributors"
-    }
-  ).addTo(map);
+L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+    maxZoom: 19,
+    attribution: "© OpenStreetMap"
+  }
+).addTo(map);
 
-  // OpenSeaMap nautical overlay
-  L.tileLayer(
-    "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
-    {
-      maxZoom: 18,
-      opacity: 0.9,
-      attribution: "Nautical data © OpenSeaMap"
-    }
-  ).addTo(map);
+let boat;
 
-  let boatMarker = null;
+function getGPS() {
 
-  function findBoat() {
+  if (!navigator.geolocation) {
+    alert("Is mobile mein GPS available nahi hai.");
+    return;
+  }
 
-    const status = document.getElementById("status");
+  navigator.geolocation.getCurrentPosition(
 
-    if (!navigator.geolocation) {
-      status.innerText = "GPS not supported";
-      return;
-    }
+    function(position) {
 
-    status.innerText = "GPS: Finding boat...";
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
 
-    navigator.geolocation.getCurrentPosition(
-
-      function(position) {
-
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-
-        if (boatMarker) {
-          map.removeLayer(boatMarker);
-        }
-
-        boatMarker = L.marker([lat, lon])
-          .addTo(map)
-          .bindPopup("🚤 Your Boat")
-          .openPopup();
-
-        map.setView([lat, lon], 15);
-
-        status.innerText =
-          "GPS: " +
-          lat.toFixed(5) +
-          ", " +
-          lon.toFixed(5);
-      },
-
-      function(error) {
-
-        status.innerText =
-          "GPS permission allow karein";
-
-      },
-
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0
+      if (boat) {
+        map.removeLayer(boat);
       }
-    );
-  }
 
-  function zoomIn() {
-    map.zoomIn();
-  }
+      boat = L.marker([lat, lon])
+        .addTo(map)
+        .bindPopup("🚤 Aapki Boat")
+        .openPopup();
 
-  function zoomOut() {
-    map.zoomOut();
-  }
+      map.setView([lat, lon], 16);
+    },
+
+    function(error) {
+
+      alert(
+        "GPS permission allow karein.\nError: " +
+        error.message
+      );
+
+    },
+
+    {
+      enableHighAccuracy: true,
+      timeout: 20000,
+      maximumAge: 0
+    }
+  );
+}
 
 </script>
 
