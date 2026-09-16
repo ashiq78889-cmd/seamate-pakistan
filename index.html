@@ -1,7 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<<style>
+html, body {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  max-width: 100%;
+}
+
+button {
+  min-height: 44px;
+  white-space: normal;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 10px !important;
+  }
+
+  .container,
+  .app,
+  .card,
+  .panel,
+  main {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .buttons,
+  .button-row,
+  .controls,
+  .actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  button {
+    width: 100% !important;
+    font-size: 14px !important;
+    padding: 10px 6px !important;
+  }
+}
+</style>>
 
 <meta charset="UTF-8">
 
