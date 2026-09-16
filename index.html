@@ -1,7 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<<style>
+<<sty@media (max-width: 600px) {
+  #map,
+  .map,
+  .map-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .leaflet-control-zoom {
+    margin-right: 5px !important;
+  }
+
+  .leaflet-control {
+    max-width: calc(100vw - 20px) !important;
+  }
+
+  .leaflet-control a {
+    width: 34px !important;
+    height: 34px !important;
+    line-height: 34px !important;
+  }
+}le>
 html, body {
   width: 100%;
   max-width: 100%;
