@@ -2,316 +2,571 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>SeaMate Pakistan</title>
+<meta name="theme-color" content="#062532">
+<meta name="description" content="SeaMate Pakistan marine GPS and route app">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+
+html,body{
+ margin:0;
+ padding:0;
+ width:100%;
+ height:100%;
+ overflow:hidden;
+ font-family:Arial,sans-serif;
+ background:#061923;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #061a2b;
-  color: white;
+#map{
+ width:100%;
+ height:100dvh;
 }
 
-header {
-  background: #087ea4;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,.4);
+.topbar{
+ position:fixed;
+ top:8px;
+ left:7px;
+ right:7px;
+ z-index:9999;
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:5px;
+ background:rgba(3,27,37,.95);
+ padding:7px;
+ border-radius:13px;
+ box-shadow:0 3px 15px rgba(0,0,0,.35);
 }
 
-header h1 {
-  margin: 0;
-  font-size: 24px;
+button{
+ border:0;
+ border-radius:8px;
+ min-height:40px;
+ padding:7px 4px;
+ background:#087ea4;
+ color:#fff;
+ font-size:11px;
+ font-weight:bold;
+ cursor:pointer;
 }
 
-header p {
-  margin: 5px 0 0;
-  font-size: 13px;
+button:active{
+ transform:scale(.96);
+ background:#075f7b;
 }
 
-.container {
-  padding: 15px;
-  max-width: 600px;
-  margin: auto;
+#downloadBtn{
+ grid-column:span 2;
+ background:#126f86;
 }
 
-.card {
-  background: #0c2940;
-  border-radius: 15px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,.25);
+.dashboard{
+ position:fixed;
+ left:7px;
+ right:7px;
+ bottom:7px;
+ z-index:9999;
+ background:rgba(3,32,44,.96);
+ color:#fff;
+ border-radius:15px;
+ padding:9px;
+ box-shadow:0 3px 18px rgba(0,0,0,.45);
 }
 
-.card h2 {
-  margin-top: 0;
-  font-size: 19px;
+.title{
+ text-align:center;
+ font-size:15px;
+ font-weight:bold;
+ margin-bottom:7px;
 }
 
-.status {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.status{
+ text-align:center;
+ font-size:10px;
+ margin-bottom:6px;
+ color:#8ee8ff;
 }
 
-.dot {
-  width: 14px;
-  height: 14px;
-  background: #20d46b;
-  border-radius: 50%;
-  box-shadow: 0 0 10px #20d46b;
+.grid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:5px;
 }
 
-.map {
-  height: 250px;
-  border-radius: 12px;
-  background:
-    linear-gradient(rgba(0,80,120,.5), rgba(0,30,60,.8)),
-    repeating-linear-gradient(
-      45deg,
-      #07506e,
-      #07506e 10px,
-      #064764 10px,
-      #064764 20px
-    );
-  position: relative;
-  overflow: hidden;
+.box{
+ background:#0d4052;
+ border-radius:8px;
+ padding:7px 3px;
+ text-align:center;
+ min-width:0;
 }
 
-.map-title {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  background: rgba(0,0,0,.55);
-  padding: 8px 12px;
-  border-radius: 8px;
+.label{
+ font-size:9px;
+ opacity:.8;
 }
 
-.location {
-  position: absolute;
-  left: 48%;
-  top: 45%;
-  font-size: 35px;
+.value{
+ font-size:11px;
+ font-weight:bold;
+ margin-top:3px;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
 }
 
-.map-controls {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+.leaflet-control-layers{
+ margin-top:120px!important;
 }
 
-.map-controls button {
-  width: 42px;
-  height: 42px;
-  border: none;
-  border-radius: 10px;
-  background: white;
-  color: #06243a;
-  font-size: 22px;
-  font-weight: bold;
-  cursor: pointer;
+.leaflet-control-zoom{
+ margin-bottom:130px!important;
 }
 
-.buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+@media(max-width:420px){
+ .topbar{
+  grid-template-columns:repeat(3,1fr);
+ }
+ #downloadBtn{
+  grid-column:span 3;
+ }
+ .grid{
+  grid-template-columns:repeat(2,1fr);
+ }
+ .value{
+  font-size:12px;
+ }
 }
 
-button.main {
-  border: none;
-  padding: 14px;
-  border-radius: 10px;
-  background: #0a91bd;
-  color: white;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button.main:active,
-.map-controls button:active {
-  transform: scale(.96);
-}
-
-.info {
-  display: flex;
-  justify-content: space-between;
-  padding: 9px 0;
-  border-bottom: 1px solid rgba(255,255,255,.1);
-}
-
-.info:last-child {
-  border-bottom: none;
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-  color: #9bb4c4;
-  font-size: 12px;
+@media(min-width:700px){
+ .topbar{
+  grid-template-columns:repeat(7,auto);
+  justify-content:center;
+ }
+ #downloadBtn{
+  grid-column:auto;
+ }
+ .dashboard{
+  left:20px;
+  right:20px;
+  bottom:15px;
+ }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>⚓ SeaMate Pakistan</h1>
-  <p>Marine Safety & Assistance App</p>
-</header>
-
-<div class="container">
-
-  <div class="card">
-    <h2>📡 Signal Status</h2>
-
-    <div class="status">
-      <span class="dot"></span>
-      <div>
-        <strong>Connected</strong><br>
-        <small>SeaMate service active</small>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>🗺️ Marine Map</h2>
-
-    <div class="map" id="map">
-      <div class="map-title">📍 Your Location</div>
-
-      <div class="location">🚢</div>
-
-      <div class="map-controls">
-        <button onclick="zoomIn()">+</button>
-        <button onclick="zoomOut()">−</button>
-        <button onclick="resetZoom()">⌾</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>🚨 Emergency</h2>
-
-    <div class="buttons">
-      <button class="main" onclick="emergency()">
-        🚨 Emergency
-      </button>
-
-      <button class="main" onclick="shareLocation()">
-        📍 Share Location
-      </button>
-
-      <button class="main" onclick="weather()">
-        🌦️ Weather
-      </button>
-
-      <button class="main" onclick="help()">
-        ℹ️ Help
-      </button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>📊 Sea Information</h2>
-
-    <div class="info">
-      <span>🌊 Sea Status</span>
-      <strong>Active</strong>
-    </div>
-
-    <div class="info">
-      <span>🚢 Marine Area</span>
-      <strong>Pakistan</strong>
-    </div>
-
-    <div class="info">
-      <span>📡 Connection</span>
-      <strong>Available</strong>
-    </div>
-  </div>
-
+<div class="topbar">
+<button id="startBtn">🚤 Start GPS</button>
+<button id="stopBtn">⛔ Stop</button>
+<button id="waypointBtn">📌 Waypoint</button>
+<button id="saveBtn">💾 Save</button>
+<button id="loadBtn">📂 Load</button>
+<button id="clearBtn">🗑️ Clear</button>
+<button id="downloadBtn">📥 Download Offline Map</button>
 </div>
 
-<footer>
-  SeaMate Pakistan © 2026
-</footer>
+<div id="map"></div>
+
+<div class="dashboard">
+<div class="title">🌊 SeaMate Pakistan</div>
+<div class="status" id="status">GPS Ready</div>
+
+<div class="grid">
+
+<div class="box">
+<div class="label">GPS</div>
+<div class="value" id="gps">Waiting...</div>
+</div>
+
+<div class="box">
+<div class="label">SPEED</div>
+<div class="value" id="speed">0.0 kn</div>
+</div>
+
+<div class="box">
+<div class="label">HEADING</div>
+<div class="value" id="heading">--</div>
+</div>
+
+<div class="box">
+<div class="label">DISTANCE</div>
+<div class="value" id="distance">0 m</div>
+</div>
+
+</div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
+const map=L.map("map").setView([24.85,67.00],10);
 
-let zoom = 1;
+const streetMap=L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
+ maxZoom:19,
+ attribution:"© OpenStreetMap"
+}).addTo(map);
 
-function updateZoom() {
-  const map = document.getElementById("map");
-  map.style.backgroundSize = (100 * zoom) + "% " + (100 * zoom) + "%";
+const seaMap=L.tileLayer(
+"https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+{
+ maxZoom:18,
+ opacity:.9,
+ attribution:"© OpenSeaMap contributors"
+}).addTo(map);
+
+L.control.layers(
+{"🗺️ Normal Map":streetMap},
+{"⚓ Nautical Information":seaMap},
+{collapsed:true}
+).addTo(map);
+
+let watchID=null;
+let boatMarker=null;
+let boatPosition=null;
+let lastPosition=null;
+let totalDistance=0;
+let route=[];
+let routeLine=null;
+let waypoints=[];
+
+const gpsEl=document.getElementById("gps");
+const speedEl=document.getElementById("speed");
+const headingEl=document.getElementById("heading");
+const distanceEl=document.getElementById("distance");
+const statusEl=document.getElementById("status");
+
+function setStatus(text){
+ statusEl.innerText=text;
 }
 
-function zoomIn() {
-  if (zoom < 2) {
-    zoom += 0.2;
-    updateZoom();
+function startGPS(){
+
+ if(!navigator.geolocation){
+  alert("Is mobile/browser mein GPS available nahi hai.");
+  return;
+ }
+
+ if(watchID!==null){
+  setStatus("GPS already running");
+  return;
+ }
+
+ gpsEl.innerText="Finding...";
+ setStatus("📡 GPS searching...");
+
+ watchID=navigator.geolocation.watchPosition(
+
+ function(position){
+
+  const lat=position.coords.latitude;
+  const lon=position.coords.longitude;
+  const current=[lat,lon];
+
+  boatPosition=current;
+
+  if(lastPosition){
+   const distance=map.distance(lastPosition,current);
+   if(distance>1) totalDistance+=distance;
   }
-}
 
-function zoomOut() {
-  if (zoom > 0.6) {
-    zoom -= 0.2;
-    updateZoom();
+  lastPosition=current;
+  route.push(current);
+
+  if(!routeLine){
+   routeLine=L.polyline(route,{weight:5}).addTo(map);
+  }else{
+   routeLine.setLatLngs(route);
   }
-}
 
-function resetZoom() {
-  zoom = 1;
-  updateZoom();
-}
-
-function emergency() {
-  alert("🚨 Emergency mode activated.\nPlease contact the nearest marine rescue service.");
-}
-
-function shareLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function(position) {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-
-        alert(
-          "📍 Location found\n\nLatitude: " +
-          lat +
-          "\nLongitude: " +
-          lon
-        );
-      },
-      function() {
-        alert("Location permission is required.");
-      }
-    );
-  } else {
-    alert("Location is not supported on this device.");
+  if(!boatMarker){
+   boatMarker=L.marker(current)
+   .addTo(map)
+   .bindPopup("🚤 Aapki Boat");
+  }else{
+   boatMarker.setLatLng(current);
   }
-}
 
-function weather() {
-  alert("🌦️ Weather service will be connected in the next version.");
-}
+  let speed=0;
 
-function help() {
-  alert(
-    "⚓ SeaMate Pakistan\n\n" +
-    "Use the buttons above for marine assistance, location and emergency information."
+  if(position.coords.speed!==null &&
+     position.coords.speed>=0){
+   speed=position.coords.speed*1.94384;
+  }
+
+  const heading=position.coords.heading;
+
+  gpsEl.innerText=
+   lat.toFixed(5)+", "+lon.toFixed(5);
+
+  speedEl.innerText=
+   speed.toFixed(1)+" kn";
+
+  headingEl.innerText=
+   heading===null ?
+   "--" :
+   heading.toFixed(0)+"°";
+
+  distanceEl.innerText=
+   totalDistance<1000 ?
+   totalDistance.toFixed(0)+" m" :
+   (totalDistance/1000).toFixed(2)+" km";
+
+  setStatus("🟢 GPS Connected");
+
+  map.setView(
+   current,
+   Math.max(map.getZoom(),14)
   );
+
+ },
+
+ function(error){
+
+  setStatus("🔴 GPS Error");
+
+  alert(
+   "GPS Error: "+error.message+
+   "\n\nLocation permission check karein."
+  );
+
+ },
+
+ {
+  enableHighAccuracy:true,
+  maximumAge:1000,
+  timeout:20000
+ }
+ );
 }
 
+function stopGPS(){
+
+ if(watchID!==null){
+  navigator.geolocation.clearWatch(watchID);
+  watchID=null;
+  setStatus("⛔ GPS stopped");
+  gpsEl.innerText="GPS stopped";
+ }
+}
+
+function addWaypoint(){
+
+ if(!boatPosition){
+  alert("Pehle 🚤 Start GPS dabayein.");
+  return;
+ }
+
+ const marker=L.marker(boatPosition)
+ .addTo(map)
+ .bindPopup(
+  "📌 Waypoint<br>"+
+  boatPosition[0].toFixed(5)+
+  ", "+
+  boatPosition[1].toFixed(5)
+ );
+
+ waypoints.push(marker);
+ marker.openPopup();
+ setStatus("📌 Waypoint saved");
+}
+
+function saveRoute(){
+
+ if(route.length<2){
+  alert("Pehle GPS route record karein.");
+  return;
+ }
+
+ localStorage.setItem(
+  "SeaMateRoute",
+  JSON.stringify(route)
+ );
+
+ setStatus("💾 Route saved");
+ alert("✅ Route save ho gaya.");
+}
+
+function loadRoute(){
+
+ const saved=localStorage.getItem("SeaMateRoute");
+
+ if(!saved){
+  alert("Koi saved route nahi mila.");
+  return;
+ }
+
+ const savedRoute=JSON.parse(saved);
+
+ if(routeLine){
+  map.removeLayer(routeLine);
+ }
+
+ routeLine=L.polyline(
+  savedRoute,
+  {weight:5}
+ ).addTo(map);
+
+ map.fitBounds(routeLine.getBounds());
+
+ setStatus("📂 Route loaded");
+ alert("📂 Route load ho gaya.");
+}
+
+function clearRoute(){
+
+ if(routeLine){
+  map.removeLayer(routeLine);
+  routeLine=null;
+ }
+
+ route=[];
+ lastPosition=null;
+ totalDistance=0;
+
+ distanceEl.innerText="0 m";
+ setStatus("🗑️ Current route cleared");
+
+ alert("🗑️ Current route clear ho gaya.");
+}
+
+function latLonToTile(lat,lon,zoom){
+
+ const latRad=lat*Math.PI/180;
+ const n=Math.pow(2,zoom);
+
+ const x=Math.floor(
+  (lon+180)/360*n
+ );
+
+ const y=Math.floor(
+  (
+   1-
+   Math.asinh(Math.tan(latRad))/Math.PI
+  )/2*n
+ );
+
+ return {x,y};
+}
+
+async function downloadMapArea(){
+
+ if(!("caches" in window)){
+  alert("Offline storage supported nahi hai.");
+  return;
+ }
+
+ const center=map.getCenter();
+ const zoom=Math.min(map.getZoom(),15);
+
+ const centerTile=
+  latLonToTile(
+   center.lat,
+   center.lng,
+   zoom
+  );
+
+ const cache=
+  await caches.open("seamate-offline-v3");
+
+ const urls=[];
+
+ for(
+  let x=centerTile.x-2;
+  x<=centerTile.x+2;
+  x++
+ ){
+
+  for(
+   let y=centerTile.y-2;
+   y<=centerTile.y+2;
+   y++
+  ){
+
+   urls.push(
+    `https://tile.openstreetmap.org/${zoom}/${x}/${y}.png`
+   );
+
+   urls.push(
+    `https://tiles.openseamap.org/seamark/${zoom}/${x}/${y}.png`
+   );
+  }
+ }
+
+ setStatus("📥 Downloading map...");
+
+ let done=0;
+
+ for(const url of urls){
+
+  try{
+
+   const response=await fetch(url);
+
+   if(response.ok){
+    await cache.put(
+     new Request(url),
+     response.clone()
+    );
+   }
+
+  }catch(error){
+   console.log("Tile failed",url);
+  }
+
+  done++;
+ }
+
+ setStatus("🟢 Offline map ready");
+
+ alert(
+  "✅ Offline map save ho gaya.\n\n"+
+  "Tiles processed: "+done
+ );
+}
+
+document
+.getElementById("startBtn")
+.addEventListener("click",startGPS);
+
+document
+.getElementById("stopBtn")
+.addEventListener("click",stopGPS);
+
+document
+.getElementById("waypointBtn")
+.addEventListener("click",addWaypoint);
+
+document
+.getElementById("saveBtn")
+.addEventListener("click",saveRoute);
+
+document
+.getElementById("loadBtn")
+.addEventListener("click",loadRoute);
+
+document
+.getElementById("clearBtn")
+.addEventListener("click",clearRoute);
+
+document
+.getElementById("downloadBtn")
+.addEventListener("click",downloadMapArea);
+
+if("serviceWorker" in navigator){
+ navigator.serviceWorker.register(
+  "service-worker.js"
+ ).catch(function(error){
+  console.log("Service Worker:",error);
+ });
+}
 </script>
 
 </body>
