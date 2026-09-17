@@ -85,6 +85,9 @@ button:active{transform:scale(.96)}
  </div>
 
  <div class="topBtns">
+  <button onclick="zoomIn()">➕ Zoom</button>
+<button onclick="zoomOut()">➖ Zoom</button>
+<button onclick="toggleLayout()">☰ Layout</button>
   <button onclick="startGPS()">🚤 GPS</button>
   <button onclick="stopGPS()">⛔ Stop</button>
   <button onclick="addWaypoint()">📌 Point</button>
@@ -118,6 +121,23 @@ button:active{transform:scale(.96)}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
+ function zoomIn(){
+  map.zoomIn();
+}
+
+function zoomOut(){
+  map.zoomOut();
+}
+
+function toggleLayout(){
+  const dash=document.querySelector(".dashboard");
+
+  if(dash.style.gridTemplateColumns==="repeat(2,1fr)"){
+    dash.style.gridTemplateColumns="repeat(4,1fr)";
+  }else{
+    dash.style.gridTemplateColumns="repeat(2,1fr)";
+  }
+}
 let map=L.map("map",{zoomControl:true}).setView([24.86,67.01],10);
 
 let street=L.tileLayer(
