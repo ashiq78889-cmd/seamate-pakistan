@@ -2,569 +2,348 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#061a2b">
 <title>SeaMate Pakistan</title>
-<meta name="theme-color" content="#062532">
-<meta name="description" content="SeaMate Pakistan marine GPS and route app">
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 *{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;font-family:Arial,sans-serif;background:#061a2b;color:white}
+#app{height:100%;display:flex;flex-direction:column}
 
-html,body{
- margin:0;
- padding:0;
- width:100%;
- height:100%;
- overflow:hidden;
- font-family:Arial,sans-serif;
- background:#061923;
+.top{
+ height:64px;background:linear-gradient(135deg,#061a2b,#0b4564);
+ display:flex;align-items:center;gap:10px;padding:7px 10px;
+ box-shadow:0 2px 12px #0008;z-index:1000
 }
-
-#map{
- width:100%;
- height:100dvh;
+.logo{
+ width:48px;height:48px;border-radius:15px;
+ background:linear-gradient(145deg,#18c9ff,#00639b);
+ display:flex;align-items:center;justify-content:center;
+ font-size:27px;
+ box-shadow:inset 3px 3px 5px #ffffff77,inset -5px -5px 8px #00324f,
+ 5px 6px 10px #0008;transform:perspective(100px) rotateX(4deg)
 }
-
-.topbar{
- position:fixed;
- top:8px;
- left:7px;
- right:7px;
- z-index:9999;
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:5px;
- background:rgba(3,27,37,.95);
- padding:7px;
- border-radius:13px;
- box-shadow:0 3px 15px rgba(0,0,0,.35);
-}
-
+.brand{font-size:18px;font-weight:bold;line-height:18px}
+.brand small{font-size:10px;color:#8fe6ff}
+.topBtns{margin-left:auto;display:flex;gap:5px}
 button{
- border:0;
- border-radius:8px;
- min-height:40px;
- padding:7px 4px;
- background:#087ea4;
- color:#fff;
- font-size:11px;
- font-weight:bold;
- cursor:pointer;
+ border:0;border-radius:10px;padding:9px 10px;
+ background:#0c6d96;color:white;font-weight:bold;
+ box-shadow:0 3px 7px #0006;cursor:pointer
 }
-
-button:active{
- transform:scale(.96);
- background:#075f7b;
-}
-
-#downloadBtn{
- grid-column:span 2;
- background:#126f86;
-}
+button:active{transform:scale(.96)}
+#map{flex:1;min-height:0}
 
 .dashboard{
- position:fixed;
- left:7px;
- right:7px;
- bottom:7px;
- z-index:9999;
- background:rgba(3,32,44,.96);
- color:#fff;
- border-radius:15px;
- padding:9px;
- box-shadow:0 3px 18px rgba(0,0,0,.45);
+ position:absolute;left:8px;right:8px;bottom:8px;z-index:900;
+ background:#061a2bf2;border:1px solid #2c8eb4;
+ border-radius:16px;padding:9px;
+ display:grid;grid-template-columns:repeat(4,1fr);gap:7px;
+ box-shadow:0 4px 18px #0009
 }
+.stat{text-align:center;background:#0b3045;border-radius:10px;padding:7px 3px}
+.stat b{display:block;font-size:14px;color:#54d8ff}
+.stat span{font-size:9px;color:#b8d5df}
 
-.title{
- text-align:center;
- font-size:15px;
- font-weight:bold;
- margin-bottom:7px;
+.panel{
+ position:absolute;top:74px;right:8px;z-index:1001;
+ width:min(280px,calc(100% - 16px));
+ background:#061a2bf5;border:1px solid #267d9f;
+ border-radius:15px;padding:12px;display:none;
+ box-shadow:0 5px 20px #0009
 }
+.panel h3{margin:0 0 8px;font-size:16px}
+.panel p{font-size:12px;color:#c5e3ec}
+.close{float:right;background:#963b3b;padding:5px 8px}
 
-.status{
- text-align:center;
- font-size:10px;
- margin-bottom:6px;
- color:#8ee8ff;
-}
-
-.grid{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:5px;
-}
-
-.box{
- background:#0d4052;
- border-radius:8px;
- padding:7px 3px;
- text-align:center;
- min-width:0;
-}
-
-.label{
- font-size:9px;
- opacity:.8;
-}
-
-.value{
- font-size:11px;
- font-weight:bold;
- margin-top:3px;
- white-space:nowrap;
- overflow:hidden;
- text-overflow:ellipsis;
-}
-
-.leaflet-control-layers{
- margin-top:120px!important;
-}
-
-.leaflet-control-zoom{
- margin-bottom:130px!important;
-}
-
-@media(max-width:420px){
- .topbar{
-  grid-template-columns:repeat(3,1fr);
- }
- #downloadBtn{
-  grid-column:span 3;
- }
- .grid{
-  grid-template-columns:repeat(2,1fr);
- }
- .value{
-  font-size:12px;
- }
-}
-
-@media(min-width:700px){
- .topbar{
-  grid-template-columns:repeat(7,auto);
-  justify-content:center;
- }
- #downloadBtn{
-  grid-column:auto;
- }
- .dashboard{
-  left:20px;
-  right:20px;
-  bottom:15px;
- }
+@media(max-width:600px){
+ .top{height:58px;padding:5px 7px}
+ .logo{width:42px;height:42px;font-size:23px;border-radius:13px}
+ .brand{font-size:15px}
+ .brand small{font-size:9px}
+ .topBtns{overflow-x:auto;max-width:58%}
+ .topBtns button{padding:7px;font-size:10px;white-space:nowrap}
+ .dashboard{grid-template-columns:repeat(4,1fr);bottom:5px}
+ .stat{padding:6px 2px}
+ .stat b{font-size:12px}
 }
 </style>
 </head>
 
 <body>
+<div id="app">
 
-<div class="topbar">
-<button id="startBtn">🚤 Start GPS</button>
-<button id="stopBtn">⛔ Stop</button>
-<button id="waypointBtn">📌 Waypoint</button>
-<button id="saveBtn">💾 Save</button>
-<button id="loadBtn">📂 Load</button>
-<button id="clearBtn">🗑️ Clear</button>
-<button id="downloadBtn">📥 Download Offline Map</button>
-</div>
+<header class="top">
+ <div class="logo">⚓</div>
+ <div class="brand">
+   SeaMate Pakistan
+   <small>MARINE NAVIGATION</small>
+ </div>
+
+ <div class="topBtns">
+  <button onclick="startGPS()">🚤 GPS</button>
+  <button onclick="stopGPS()">⛔ Stop</button>
+  <button onclick="addWaypoint()">📌 Point</button>
+  <button onclick="saveRoute()">💾 Save</button>
+  <button onclick="loadRoute()">📂 Load</button>
+  <button onclick="clearRoute()">🗑️ Clear</button>
+  <button onclick="offlineMap()">📥 Offline</button>
+  <button onclick="showEmergency()">🆘</button>
+ </div>
+</header>
 
 <div id="map"></div>
 
 <div class="dashboard">
-<div class="title">🌊 SeaMate Pakistan</div>
-<div class="status" id="status">GPS Ready</div>
-
-<div class="grid">
-
-<div class="box">
-<div class="label">GPS</div>
-<div class="value" id="gps">Waiting...</div>
+ <div class="stat"><b id="gps">OFF</b><span>GPS</span></div>
+ <div class="stat"><b id="speed">0.0 kt</b><span>SPEED</span></div>
+ <div class="stat"><b id="heading">0°</b><span>HEADING</span></div>
+ <div class="stat"><b id="distance">0.00 km</b><span>DISTANCE</span></div>
 </div>
 
-<div class="box">
-<div class="label">SPEED</div>
-<div class="value" id="speed">0.0 kn</div>
+<div id="panel" class="panel">
+ <button class="close" onclick="closePanel()">✕</button>
+ <h3>🆘 Emergency</h3>
+ <p><b>SeaMate Pakistan</b> emergency information.</p>
+ <p>GPS location ko note/share karne ke liye phone ka normal location-sharing feature use karein.</p>
+ <p>Real emergency mein local maritime/rescue authorities se contact karein.</p>
 </div>
 
-<div class="box">
-<div class="label">HEADING</div>
-<div class="value" id="heading">--</div>
-</div>
-
-<div class="box">
-<div class="label">DISTANCE</div>
-<div class="value" id="distance">0 m</div>
-</div>
-
-</div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-const map=L.map("map").setView([24.85,67.00],10);
+let map=L.map("map",{zoomControl:true}).setView([24.86,67.01],10);
 
-const streetMap=L.tileLayer(
-"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-{
- maxZoom:19,
- attribution:"© OpenStreetMap"
-}).addTo(map);
-
-const seaMap=L.tileLayer(
-"https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
-{
- maxZoom:18,
- opacity:.9,
- attribution:"© OpenSeaMap contributors"
-}).addTo(map);
-
-L.control.layers(
-{"🗺️ Normal Map":streetMap},
-{"⚓ Nautical Information":seaMap},
-{collapsed:true}
+let street=L.tileLayer(
+ "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+ {maxZoom:19,attribution:"© OpenStreetMap contributors"}
 ).addTo(map);
 
-let watchID=null;
-let boatMarker=null;
-let boatPosition=null;
+let sea=L.tileLayer(
+ "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+ {maxZoom:18,attribution:"© OpenSeaMap"}
+).addTo(map);
+
+let positionMarker=null;
+let routeLine=L.polyline([],{weight:4}).addTo(map);
+let routePoints=[];
+let watchId=null;
 let lastPosition=null;
 let totalDistance=0;
-let route=[];
-let routeLine=null;
-let waypoints=[];
-
-const gpsEl=document.getElementById("gps");
-const speedEl=document.getElementById("speed");
-const headingEl=document.getElementById("heading");
-const distanceEl=document.getElementById("distance");
-const statusEl=document.getElementById("status");
-
-function setStatus(text){
- statusEl.innerText=text;
-}
+let waypointLayer=L.layerGroup().addTo(map);
 
 function startGPS(){
-
  if(!navigator.geolocation){
-  alert("Is mobile/browser mein GPS available nahi hai.");
-  return;
+   alert("Is mobile/browser mein GPS available nahi hai.");
+   return;
  }
 
- if(watchID!==null){
-  setStatus("GPS already running");
-  return;
- }
+ if(watchId!==null)return;
 
- gpsEl.innerText="Finding...";
- setStatus("📡 GPS searching...");
+ document.getElementById("gps").textContent="SEARCH";
 
- watchID=navigator.geolocation.watchPosition(
+ watchId=navigator.geolocation.watchPosition(
+  pos=>{
+   let lat=pos.coords.latitude;
+   let lon=pos.coords.longitude;
 
- function(position){
+   let accuracy=pos.coords.accuracy||0;
+   let speed=pos.coords.speed||0;
+   let heading=pos.coords.heading;
 
-  const lat=position.coords.latitude;
-  const lon=position.coords.longitude;
-  const current=[lat,lon];
+   document.getElementById("gps").textContent="ON";
 
-  boatPosition=current;
+   if(!positionMarker){
+    positionMarker=L.marker([lat,lon]).addTo(map)
+     .bindPopup("🚤 SeaMate GPS").openPopup();
+    map.setView([lat,lon],15);
+   }else{
+    positionMarker.setLatLng([lat,lon]);
+   }
 
-  if(lastPosition){
-   const distance=map.distance(lastPosition,current);
-   if(distance>1) totalDistance+=distance;
+   if(lastPosition){
+    totalDistance += distanceKm(
+      lastPosition.lat,lastPosition.lon,lat,lon
+    );
+   }
+
+   lastPosition={lat:lat,lon:lon};
+
+   routePoints.push([lat,lon]);
+   routeLine.setLatLngs(routePoints);
+
+   document.getElementById("speed").textContent =
+     ((speed||0)*1.94384).toFixed(1)+" kt";
+
+   if(typeof heading==="number"&&!isNaN(heading)){
+     document.getElementById("heading").textContent =
+       Math.round(heading)+"°";
+   }
+
+   document.getElementById("distance").textContent =
+     totalDistance.toFixed(2)+" km";
+  },
+  err=>{
+   document.getElementById("gps").textContent="ERROR";
+   alert("GPS location nahi mil saki. Location permission ON karein.");
+  },
+  {
+   enableHighAccuracy:true,
+   maximumAge:2000,
+   timeout:15000
   }
-
-  lastPosition=current;
-  route.push(current);
-
-  if(!routeLine){
-   routeLine=L.polyline(route,{weight:5}).addTo(map);
-  }else{
-   routeLine.setLatLngs(route);
-  }
-
-  if(!boatMarker){
-   boatMarker=L.marker(current)
-   .addTo(map)
-   .bindPopup("🚤 Aapki Boat");
-  }else{
-   boatMarker.setLatLng(current);
-  }
-
-  let speed=0;
-
-  if(position.coords.speed!==null &&
-     position.coords.speed>=0){
-   speed=position.coords.speed*1.94384;
-  }
-
-  const heading=position.coords.heading;
-
-  gpsEl.innerText=
-   lat.toFixed(5)+", "+lon.toFixed(5);
-
-  speedEl.innerText=
-   speed.toFixed(1)+" kn";
-
-  headingEl.innerText=
-   heading===null ?
-   "--" :
-   heading.toFixed(0)+"°";
-
-  distanceEl.innerText=
-   totalDistance<1000 ?
-   totalDistance.toFixed(0)+" m" :
-   (totalDistance/1000).toFixed(2)+" km";
-
-  setStatus("🟢 GPS Connected");
-
-  map.setView(
-   current,
-   Math.max(map.getZoom(),14)
-  );
-
- },
-
- function(error){
-
-  setStatus("🔴 GPS Error");
-
-  alert(
-   "GPS Error: "+error.message+
-   "\n\nLocation permission check karein."
-  );
-
- },
-
- {
-  enableHighAccuracy:true,
-  maximumAge:1000,
-  timeout:20000
- }
  );
 }
 
 function stopGPS(){
-
- if(watchID!==null){
-  navigator.geolocation.clearWatch(watchID);
-  watchID=null;
-  setStatus("⛔ GPS stopped");
-  gpsEl.innerText="GPS stopped";
+ if(watchId!==null){
+   navigator.geolocation.clearWatch(watchId);
+   watchId=null;
  }
+ document.getElementById("gps").textContent="OFF";
 }
 
 function addWaypoint(){
+ let center=map.getCenter();
 
- if(!boatPosition){
-  alert("Pehle 🚤 Start GPS dabayein.");
-  return;
- }
+ let marker=L.marker(center).addTo(waypointLayer)
+   .bindPopup("📌 SeaMate Waypoint").openPopup();
 
- const marker=L.marker(boatPosition)
- .addTo(map)
- .bindPopup(
-  "📌 Waypoint<br>"+
-  boatPosition[0].toFixed(5)+
-  ", "+
-  boatPosition[1].toFixed(5)
- );
-
- waypoints.push(marker);
- marker.openPopup();
- setStatus("📌 Waypoint saved");
+ marker._latlng=center;
 }
 
 function saveRoute(){
+ let data={
+  route:routePoints,
+  distance:totalDistance,
+  time:new Date().toISOString()
+ };
 
- if(route.length<2){
-  alert("Pehle GPS route record karein.");
-  return;
- }
-
- localStorage.setItem(
-  "SeaMateRoute",
-  JSON.stringify(route)
- );
-
- setStatus("💾 Route saved");
- alert("✅ Route save ho gaya.");
+ localStorage.setItem("seamate_route",JSON.stringify(data));
+ alert("Route phone mein save ho gaya.");
 }
 
 function loadRoute(){
+ let raw=localStorage.getItem("seamate_route");
 
- const saved=localStorage.getItem("SeaMateRoute");
-
- if(!saved){
-  alert("Koi saved route nahi mila.");
-  return;
+ if(!raw){
+   alert("Koi saved route nahi mila.");
+   return;
  }
 
- const savedRoute=JSON.parse(saved);
+ let data=JSON.parse(raw);
 
- if(routeLine){
-  map.removeLayer(routeLine);
+ routePoints=data.route||[];
+ totalDistance=data.distance||0;
+ routeLine.setLatLngs(routePoints);
+
+ if(routePoints.length){
+   map.fitBounds(routeLine.getBounds(),{padding:[30,30]});
  }
 
- routeLine=L.polyline(
-  savedRoute,
-  {weight:5}
- ).addTo(map);
+ document.getElementById("distance").textContent =
+   totalDistance.toFixed(2)+" km";
 
- map.fitBounds(routeLine.getBounds());
-
- setStatus("📂 Route loaded");
- alert("📂 Route load ho gaya.");
+ alert("Saved route load ho gaya.");
 }
 
 function clearRoute(){
+ if(!confirm("Route clear karna hai?"))return;
 
- if(routeLine){
-  map.removeLayer(routeLine);
-  routeLine=null;
- }
-
- route=[];
- lastPosition=null;
+ routePoints=[];
  totalDistance=0;
+ routeLine.setLatLngs([]);
+ waypointLayer.clearLayers();
 
- distanceEl.innerText="0 m";
- setStatus("🗑️ Current route cleared");
-
- alert("🗑️ Current route clear ho gaya.");
+ document.getElementById("distance").textContent="0.00 km";
 }
 
-function latLonToTile(lat,lon,zoom){
-
- const latRad=lat*Math.PI/180;
- const n=Math.pow(2,zoom);
-
- const x=Math.floor(
-  (lon+180)/360*n
- );
-
- const y=Math.floor(
-  (
-   1-
-   Math.asinh(Math.tan(latRad))/Math.PI
-  )/2*n
- );
-
- return {x,y};
-}
-
-async function downloadMapArea(){
-
+function offlineMap(){
  if(!("caches" in window)){
-  alert("Offline storage supported nahi hai.");
-  return;
+   alert("Is browser mein offline caching available nahi.");
+   return;
  }
 
- const center=map.getCenter();
- const zoom=Math.min(map.getZoom(),15);
-
- const centerTile=
-  latLonToTile(
-   center.lat,
-   center.lng,
-   zoom
-  );
-
- const cache=
-  await caches.open("seamate-offline-v3");
-
- const urls=[];
-
- for(
-  let x=centerTile.x-2;
-  x<=centerTile.x+2;
-  x++
- ){
-
-  for(
-   let y=centerTile.y-2;
-   y<=centerTile.y+2;
-   y++
-  ){
-
-   urls.push(
-    `https://tile.openstreetmap.org/${zoom}/${x}/${y}.png`
+ caches.open("seamate-map-v1").then(cache=>{
+   let z=10;
+   let center=map.getCenter();
+   let x=Math.floor((center.lng+180)/360*Math.pow(2,z));
+   let y=Math.floor(
+     (1-Math.asinh(Math.tan(center.lat*Math.PI/180))/Math.PI)/2
+     *Math.pow(2,z)
    );
 
-   urls.push(
-    `https://tiles.openseamap.org/seamark/${zoom}/${x}/${y}.png`
-   );
-  }
- }
+   let urls=[];
 
- setStatus("📥 Downloading map...");
-
- let done=0;
-
- for(const url of urls){
-
-  try{
-
-   const response=await fetch(url);
-
-   if(response.ok){
-    await cache.put(
-     new Request(url),
-     response.clone()
-    );
+   for(let dx=-1;dx<=1;dx++){
+    for(let dy=-1;dy<=1;dy++){
+      urls.push(
+       "https://tile.openstreetmap.org/"+z+"/"+(x+dx)+"/"+(y+dy)+".png"
+      );
+    }
    }
 
-  }catch(error){
-   console.log("Tile failed",url);
-  }
-
-  done++;
- }
-
- setStatus("🟢 Offline map ready");
-
- alert(
-  "✅ Offline map save ho gaya.\n\n"+
-  "Tiles processed: "+done
- );
+   return cache.addAll(urls);
+  }).then(()=>{
+    alert("Current area ke kuch map tiles offline save ho gaye.");
+  }).catch(()=>{
+    alert("Offline map save nahi ho saka. Internet check karein.");
+  });
 }
 
-document
-.getElementById("startBtn")
-.addEventListener("click",startGPS);
+function showEmergency(){
+ document.getElementById("panel").style.display="block";
+}
 
-document
-.getElementById("stopBtn")
-.addEventListener("click",stopGPS);
+function closePanel(){
+ document.getElementById("panel").style.display="none";
+}
 
-document
-.getElementById("waypointBtn")
-.addEventListener("click",addWaypoint);
+function distanceKm(lat1,lon1,lat2,lon2){
+ const R=6371;
+ const dLat=(lat2-lat1)*Math.PI/180;
+ const dLon=(lon2-lon1)*Math.PI/180;
 
-document
-.getElementById("saveBtn")
-.addEventListener("click",saveRoute);
+ const a=
+   Math.sin(dLat/2)**2+
+   Math.cos(lat1*Math.PI/180)*
+   Math.cos(lat2*Math.PI/180)*
+   Math.sin(dLon/2)**2;
 
-document
-.getElementById("loadBtn")
-.addEventListener("click",loadRoute);
+ return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
 
-document
-.getElementById("clearBtn")
-.addEventListener("click",clearRoute);
-
-document
-.getElementById("downloadBtn")
-.addEventListener("click",downloadMapArea);
-
+/* PWA/service worker */
 if("serviceWorker" in navigator){
- navigator.serviceWorker.register(
-  "service-worker.js"
- ).catch(function(error){
-  console.log("Service Worker:",error);
+ window.addEventListener("load",()=>{
+  const sw=`
+   self.addEventListener("install",e=>self.skipWaiting());
+   self.addEventListener("activate",e=>self.clients.claim());
+   self.addEventListener("fetch",e=>{
+    if(e.request.method!=="GET")return;
+    e.respondWith(
+     caches.match(e.request).then(cached=>{
+      return cached||fetch(e.request).then(response=>{
+       let copy=response.clone();
+       caches.open("seamate-runtime-v1")
+       .then(cache=>cache.put(e.request,copy));
+       return response;
+      }).catch(()=>cached);
+     })
+    );
+   });
+  `;
+
+  const blob=new Blob([sw],{type:"application/javascript"});
+  const url=URL.createObjectURL(blob);
+
+  navigator.serviceWorker.register(url).catch(()=>{});
  });
 }
 </script>
