@@ -1592,4 +1592,422 @@ function addPoint(){
 
 
 /* SAVE */
+ /* SAVE */
+
+function saveRoute(){
+
+ if(!route.length){
+
+  alert("❌ Save karne ke liye route ya point nahi hai.");
+
+  return;
+ }
+
+ localStorage.setItem(
+  "seamate_route",
+  JSON.stringify(route)
+ );
+
+ localStorage.setItem(
+  "seamate_distance",
+  String(totalDistance)
+ );
+
+ alert("✅ Route save ho gaya.");
+
+}
+
+
+/* LOAD */
+
+function loadRoute(){
+
+ const saved=
+ localStorage.getItem(
+  "seamate_route"
+ );
+
+ if(!saved){
+
+  alert("❌ Koi saved route nahi mila.");
+
+  return;
+ }
+
+ try{
+
+  route=
+  JSON.parse(saved);
+
+  totalDistance=
+  parseFloat(
+   localStorage.getItem(
+    "seamate_distance"
+   ) || "0"
+  );
+
+  updateRoute();
+
+  if(route.length){
+
+   map.fitBounds(route);
+
+  }
+
+  alert("✅ Route load ho gaya.");
+
+ }catch(e){
+
+  alert("❌ Saved route load nahi ho saka.");
+
+ }
+
+}
+
+
+/* CLEAR */
+
+function clearRoute(){
+
+ route=[];
+ totalDistance=0;
+ lastPosition=null;
+
+ if(routeLine){
+
+  map.removeLayer(routeLine);
+
+  routeLine=null;
+
+ }
+
+ document.getElementById(
+  "distance"
+ ).innerText="0 km";
+
+ alert("🗑 Route clear ho gaya.");
+
+}
+
+
+/* =====================================================
+   WEATHER
+===================================================== */
+
+async function updateWeather(lat,lon){
+
+ try{
+
+  if(
+   lat===undefined ||
+   lon===undefined
+  ){
+
+   lat=24.82;
+   lon=67.05;
+
+  }
+
+
+  const url=
+  "https://api.open-meteo.com/v1/forecast"+
+  "?latitude="+lat+
+  "&longitude="+lon+
+  "&current=temperature_2m,wind_speed_10m,wind_direction_10m,precipitation"+
+  "&hourly=precipitation_probability"+
+  "&timezone=auto";
+
+
+  const response=
+  await fetch(url);
+
+
+  if(!response.ok){
+
+   throw new Error(
+    "Weather API error"
+   );
+
+  }
+
+
+  const data=
+  await response.json();
+
+
+  const current=
+  data.current || {};
+
+
+  document.getElementById(
+   "temp"
+  ).innerText=
+  (current.temperature_2m ?? "--")+" °C";
+
+
+  document.getElementById(
+   "wind"
+  ).innerText=
+  (current.wind_speed_10m ?? "--")+" km/h";
+
+
+  document.getElementById(
+   "windDir"
+  ).innerText=
+  (current.wind_direction_10m ?? "--")+"°";
+
+
+  document.getElementById(
+   "rain"
+  ).innerText=
+  (current.precipitation ?? 0)+" mm";
+
+
+  /*
+    Open-Meteo current API used above
+    does not provide wave values in this request.
+    Therefore they remain -- until marine-wave
+    API is connected.
+  */
+
+  document.getElementById(
+   "wave"
+  ).innerText="-- m";
+
+
+  document.getElementById(
+   "waveDir"
+  ).innerText="--°";
+
+
+  document.getElementById(
+   "weatherText"
+  ).innerText="Current";
+
+
+  document.getElementById(
+   "updated"
+  ).innerText=
+  new Date().toLocaleTimeString();
+
+
+  document.getElementById(
+   "weatherAlert"
+  ).innerText=
+  "🌊 Current weather data updated.";
+
+
+  document.getElementById(
+   "weatherAlert"
+  ).className=
+  "alert safe";
+
+
+ }catch(error){
+
+  document.getElementById(
+   "weatherText"
+  ).innerText=
+  "Unavailable";
+
+
+  document.getElementById(
+   "weatherAlert"
+  ).innerText=
+  "⚠️ Weather data abhi available nahi.";
+
+
+  document.getElementById(
+   "weatherAlert"
+  ).className=
+  "alert warning";
+
+ }
+
+}
+
+
+/* =====================================================
+   PAYMENT
+===================================================== */
+
+function showPayment(){
+
+ const panel=
+ document.getElementById(
+  "paymentPanel"
+ );
+
+ panel.classList.toggle(
+  "hidden"
+ );
+
+
+ if(!panel.classList.contains("hidden")){
+
+  window.scrollTo({
+   top:panel.offsetTop-50,
+   behavior:"smooth"
+  });
+
+ }
+
+}
+
+
+/* PAYMENT SUBMIT */
+
+function submitPayment(){
+
+ const transactionId=
+ document.getElementById(
+  "transactionId"
+ ).value.trim();
+
+
+ if(!transactionId){
+
+  alert(
+   "❌ Transaction ID enter karein."
+  );
+
+  return;
+ }
+
+
+ const saved=
+ localStorage.getItem(
+  ACCOUNT_KEY
+ );
+
+
+ if(!saved){
+
+  alert(
+   "❌ Account nahi mila."
+  );
+
+  return;
+ }
+
+
+ try{
+
+  const account=
+  JSON.parse(saved);
+
+
+  account.paymentPending=true;
+
+  account.transactionId=
+  transactionId;
+
+
+  localStorage.setItem(
+   ACCOUNT_KEY,
+   JSON.stringify(account)
+  );
+
+
+  alert(
+   "✅ Transaction ID submit ho gayi. Payment verification ke baad Premium activate hoga."
+  );
+
+
+ }catch(e){
+
+  alert(
+   "❌ Payment information save nahi ho saki."
+  );
+
+ }
+
+}
+
+
+/* =====================================================
+   EARNINGS
+===================================================== */
+
+function showEarningInfo(){
+
+ document.getElementById(
+  "earningInfo"
+ ).classList.toggle(
+  "hidden"
+ );
+
+}
+
+
+/* =====================================================
+   HELP
+===================================================== */
+
+function showHelp(){
+
+ document.getElementById(
+  "helpBox"
+ ).classList.remove(
+  "hidden"
+ );
+
+}
+
+
+function closeHelp(){
+
+ document.getElementById(
+  "helpBox"
+ ).classList.add(
+  "hidden"
+ );
+
+}
+
+
+/* =====================================================
+   SERVICE WORKER
+===================================================== */
+
+if("serviceWorker" in navigator){
+
+ window.addEventListener(
+  "load",
+  function(){
+
+   navigator.serviceWorker
+   .register(
+    "./service-worker.js"
+   )
+   .then(function(){
+
+    console.log(
+     "SeaMate Service Worker registered"
+    );
+
+   })
+   .catch(function(error){
+
+    console.log(
+     "Service Worker error:",
+     error
+    );
+
+   });
+
+  }
+ );
+
+}
+
+
+/* =====================================================
+   FINISH
+===================================================== */
+
+</script>
+
+</body>
+</html>
  
