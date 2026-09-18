@@ -17,32 +17,8 @@ body{
  background:#eef7fb;
  color:#123;
 }
-header{
- background:linear-gradient(135deg,#063b5c,#087da1);
- color:white;
- padding:12px;
- position:sticky;
- top:0;
- z-index:1000;
- box-shadow:0 3px 10px #0004;
-}
-.head{
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:10px;
-}
-.logo{
- font-size:22px;
- font-weight:bold;
- white-space:nowrap;
- text-shadow:2px 2px 3px #002;
-}
-.logo span{font-size:30px}
-.topBtns{
- display:grid;
- grid-template-columns:repeat(5,auto);
- gap:5px;
+button,input{
+ font-family:Arial,sans-serif;
 }
 button{
  border:0;
@@ -54,6 +30,131 @@ button{
  cursor:pointer;
 }
 button:active{transform:scale(.96)}
+.hidden{display:none!important}
+
+/* LOGIN */
+
+#loginPage{
+ min-height:100vh;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+ background:linear-gradient(135deg,#063b5c,#087da1);
+}
+
+.loginBox{
+ width:100%;
+ max-width:420px;
+ background:white;
+ border-radius:18px;
+ padding:25px;
+ box-shadow:0 8px 30px #0006;
+}
+
+.loginLogo{
+ text-align:center;
+ font-size:28px;
+ font-weight:bold;
+ color:#064968;
+ margin-bottom:5px;
+}
+
+.loginSub{
+ text-align:center;
+ color:#678;
+ margin-bottom:20px;
+}
+
+.inputGroup{
+ margin-bottom:13px;
+}
+
+.inputGroup label{
+ display:block;
+ font-weight:bold;
+ margin-bottom:6px;
+ color:#064968;
+}
+
+.inputGroup input{
+ width:100%;
+ padding:12px;
+ border:1px solid #ccd8dd;
+ border-radius:9px;
+ outline:none;
+}
+
+.inputGroup input:focus{
+ border-color:#087da1;
+}
+
+.mainBtn{
+ width:100%;
+ padding:13px;
+ background:#087da1;
+ color:white;
+ margin-top:5px;
+}
+
+.secondBtn{
+ width:100%;
+ padding:13px;
+ background:#eef7fb;
+ color:#064968;
+ margin-top:8px;
+}
+
+.loginInfo{
+ margin-top:15px;
+ background:#e8f7ec;
+ color:#176528;
+ padding:11px;
+ border-radius:9px;
+ text-align:center;
+ font-size:13px;
+}
+
+#loginMsg{
+ text-align:center;
+ margin-top:10px;
+ font-weight:bold;
+ color:#a21d1d;
+}
+
+/* HEADER */
+
+header{
+ background:linear-gradient(135deg,#063b5c,#087da1);
+ color:white;
+ padding:12px;
+ position:sticky;
+ top:0;
+ z-index:1000;
+ box-shadow:0 3px 10px #0004;
+}
+
+.head{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+}
+
+.logo{
+ font-size:22px;
+ font-weight:bold;
+ white-space:nowrap;
+ text-shadow:2px 2px 3px #002;
+}
+
+.logo span{font-size:30px}
+
+.topBtns{
+ display:grid;
+ grid-template-columns:repeat(6,auto);
+ gap:5px;
+}
 
 #map{
  height:54vh;
@@ -68,6 +169,7 @@ button:active{transform:scale(.96)}
  border-radius:12px;
  box-shadow:0 2px 9px #0002;
 }
+
 .panel h2{
  margin:0 0 10px;
  color:#064968;
@@ -79,12 +181,14 @@ button:active{transform:scale(.96)}
  grid-template-columns:repeat(4,1fr);
  gap:8px;
 }
+
 .card{
  background:#eef8fc;
  padding:10px;
  border-radius:10px;
  text-align:center;
 }
+
 .card b{
  display:block;
  font-size:20px;
@@ -97,6 +201,7 @@ button:active{transform:scale(.96)}
  grid-template-columns:repeat(4,1fr);
  gap:8px;
 }
+
 .weather .card{
  border-left:4px solid #0785aa;
 }
@@ -107,34 +212,159 @@ button:active{transform:scale(.96)}
  margin-top:10px;
  font-weight:bold;
 }
+
 .safe{background:#e7f7e9;color:#176528}
 .warning{background:#fff3cd;color:#805900}
 .danger{background:#ffe5e5;color:#9c1c1c}
+
+/* ACCOUNT */
+
+.accountPanel{
+ background:linear-gradient(135deg,#063b5c,#0791b5);
+ color:white;
+}
+
+.accountPanel h2{
+ color:white;
+}
+
+.accountStatus{
+ background:#ffffff22;
+ padding:12px;
+ border-radius:10px;
+ line-height:1.7;
+}
+
+.premiumBtn{
+ background:#ffd84d;
+ color:#063b5c;
+ margin-top:10px;
+}
+
+.logoutBtn{
+ background:#fff;
+ color:#9c1c1c;
+ margin-top:10px;
+}
+
+/* ADS */
+
+.adBox{
+ margin:10px;
+ padding:15px;
+ border-radius:12px;
+ background:#fff6d5;
+ border:1px dashed #c99b00;
+ text-align:center;
+ color:#765900;
+}
+
+.adBox strong{
+ display:block;
+ font-size:18px;
+ margin-bottom:5px;
+}
+
+/* PAYMENT */
+
+.paymentPanel{
+ border:2px solid #0785aa;
+}
+
+.tillBox{
+ background:#e8f7ec;
+ padding:15px;
+ border-radius:10px;
+ text-align:center;
+ margin:10px 0;
+ color:#176528;
+}
+
+.tillNumber{
+ font-size:28px;
+ font-weight:bold;
+ letter-spacing:2px;
+ margin-top:5px;
+}
+
+.qrBox{
+ text-align:center;
+ margin:15px 0;
+}
+
+.qrBox img{
+ max-width:240px;
+ width:100%;
+ border-radius:10px;
+}
+
+.paymentInput{
+ width:100%;
+ padding:12px;
+ border:1px solid #ccd8dd;
+ border-radius:9px;
+ margin:8px 0;
+}
+
+.submitPayment{
+ width:100%;
+ background:#087da1;
+ color:white;
+ padding:13px;
+}
+
+.paymentNote{
+ background:#eef7fb;
+ padding:10px;
+ border-radius:8px;
+ font-size:13px;
+ line-height:1.5;
+}
+
+/* EARN */
 
 .earn{
  background:linear-gradient(135deg,#063b5c,#0791b5);
  color:white;
 }
-.earn h2{color:white}
+
+.earn h2{
+ color:white;
+}
+
 .earn button{
  color:#063b5c;
  margin-top:6px;
 }
 
-.hidden{display:none}
+#earningInfo{
+ margin-top:10px;
+ background:#ffffff18;
+ padding:10px;
+ border-radius:8px;
+}
+
+/* HELP */
 
 #helpBox{
  position:fixed;
  left:5%;
  right:5%;
- top:18%;
+ top:10%;
+ max-height:80vh;
+ overflow:auto;
  background:white;
  z-index:2000;
  padding:18px;
  border-radius:15px;
  box-shadow:0 5px 30px #0007;
 }
-#helpBox h2{color:#064968}
+
+#helpBox h2{
+ color:#064968;
+}
+
+/* FOOTER */
 
 footer{
  text-align:center;
@@ -143,298 +373,1124 @@ footer{
  font-size:13px;
 }
 
+/* MOBILE */
+
 @media(max-width:700px){
+
  header{padding:9px}
+
  .head{
   display:block;
  }
+
  .logo{
   text-align:center;
   margin-bottom:8px;
  }
+
  .topBtns{
   grid-template-columns:repeat(4,1fr);
   width:100%;
  }
+
  .topBtns button{
   padding:8px 3px;
-  font-size:11px;
+  font-size:10px;
  }
+
  .cards,.weather{
   grid-template-columns:repeat(2,1fr);
  }
+
  #map{
   height:48vh;
   min-height:300px;
  }
+
 }
 
 @media(max-width:380px){
+
  .topBtns{
   grid-template-columns:repeat(3,1fr);
  }
+
+ .loginBox{
+  padding:18px;
+ }
+
 }
 </style>
 </head>
 
 <body>
 
+<!-- ================= LOGIN ================= -->
+
+<div id="loginPage">
+
+ <div class="loginBox">
+
+  <div class="loginLogo">
+   ⚓ SeaMate Pakistan
+  </div>
+
+  <div class="loginSub">
+   Marine Utility App
+  </div>
+
+  <div class="inputGroup">
+   <label>Name</label>
+   <input id="nameInput"
+   type="text"
+   placeholder="Apna naam">
+  </div>
+
+  <div class="inputGroup">
+   <label>Mobile Number</label>
+   <input id="phoneInput"
+   type="tel"
+   placeholder="03XXXXXXXXX">
+  </div>
+
+  <div class="inputGroup">
+   <label>Password</label>
+   <input id="passwordInput"
+   type="password"
+   placeholder="Password">
+  </div>
+
+  <button class="mainBtn"
+  onclick="createAccount()">
+   🆕 Create Account
+  </button>
+
+  <button class="secondBtn"
+  onclick="loginAccount()">
+   🔐 Login
+  </button>
+
+  <div id="loginMsg"></div>
+
+  <div class="loginInfo">
+   🆓 New account ko 3 din ka free trial milega.
+  </div>
+
+ </div>
+
+</div>
+
+
+<!-- ================= MAIN APP ================= -->
+
+<div id="mainApp" class="hidden">
+
 <header>
+
  <div class="head">
-  <div class="logo"><span>⚓</span> SeaMate Pakistan</div>
+
+  <div class="logo">
+   <span>⚓</span> SeaMate Pakistan
+  </div>
 
   <div class="topBtns">
+
    <button onclick="zoomIn()">＋ Zoom</button>
+
    <button onclick="zoomOut()">－ Zoom</button>
+
    <button onclick="toggleLayout()">Layout</button>
+
    <button onclick="locateMe()">📍 GPS</button>
+
    <button onclick="startGPS()">▶ Start</button>
+
    <button onclick="stopGPS()">■ Stop</button>
+
    <button onclick="addPoint()">📌 Point</button>
+
    <button onclick="saveRoute()">💾 Save</button>
+
    <button onclick="loadRoute()">📂 Load</button>
+
    <button onclick="clearRoute()">🗑 Clear</button>
+
    <button onclick="updateWeather()">🌦 Weather</button>
+
    <button onclick="showHelp()">❓ Help</button>
+
   </div>
+
  </div>
+
 </header>
+
+
+<!-- ACCOUNT STATUS -->
+
+<div class="panel accountPanel">
+
+ <h2>👤 SeaMate Account</h2>
+
+ <div class="accountStatus">
+
+  User:
+  <b id="displayName">---</b>
+
+  <br>
+
+  Status:
+  <b id="subscriptionStatus">Free Trial</b>
+
+  <br>
+
+  <span id="trialRemaining"></span>
+
+ </div>
+
+ <button class="premiumBtn"
+ onclick="showPayment()">
+  ⭐ Premium / Payment
+ </button>
+
+ <button class="logoutBtn"
+ onclick="logout()">
+  🚪 Logout
+ </button>
+
+</div>
+
+
+<!-- ADS -->
+
+<div id="adBox" class="adBox">
+
+ <strong>📢 Advertisement</strong>
+
+ Free users ke liye advertisement area.
+
+ <br>
+
+ <button
+ onclick="showPayment()"
+ style="margin-top:8px">
+  ⭐ Ads Hide Karne Ke Liye Premium
+ </button>
+
+</div>
+
+
+<!-- PAYMENT -->
+
+<div id="paymentPanel"
+class="panel paymentPanel hidden">
+
+ <h2>💳 SeaMate Premium</h2>
+
+ <p>
+ Premium access ke liye JazzCash se payment karein.
+ </p>
+
+ <div class="tillBox">
+
+  JazzCash Till ID
+
+  <div class="tillNumber">
+   984417122
+  </div>
+
+ </div>
+
+
+ <div class="qrBox">
+
+  <p><b>📷 JazzCash QR</b></p>
+
+  <img
+   src="qr-code.png"
+   alt="JazzCash QR"
+   onerror="this.style.display='none'">
+
+  <p style="font-size:13px">
+   Apna QR code project mein
+   <b>qr-code.png</b> ke naam se rakhein.
+  </p>
+
+ </div>
+
+
+ <div class="paymentNote">
+
+  1. JazzCash mein payment karein.<br>
+  2. Transaction ID note karein.<br>
+  3. Neeche Transaction ID submit karein.<br>
+  4. Automatic verification ke liye JazzCash API/Gateway
+  backend baad mein connect karna hoga.
+
+ </div>
+
+
+ <input
+  id="transactionId"
+  class="paymentInput"
+  placeholder="Transaction ID enter karein">
+
+
+ <button class="submitPayment"
+ onclick="submitPayment()">
+  ✅ Submit Payment
+ </button>
+
+</div>
+
+
+<!-- MAP -->
 
 <div id="map"></div>
 
+
+<!-- BOAT DASHBOARD -->
+
 <div class="panel">
+
  <h2>🚤 Boat Dashboard</h2>
 
  <div class="cards">
-  <div class="card">GPS<b id="gpsStatus">OFF</b></div>
-  <div class="card">Speed<b id="speed">0 km/h</b></div>
-  <div class="card">Heading<b id="heading">0°</b></div>
-  <div class="card">Distance<b id="distance">0 km</b></div>
+
+  <div class="card">
+   GPS
+   <b id="gpsStatus">OFF</b>
+  </div>
+
+  <div class="card">
+   Speed
+   <b id="speed">0 km/h</b>
+  </div>
+
+  <div class="card">
+   Heading
+   <b id="heading">0°</b>
+  </div>
+
+  <div class="card">
+   Distance
+   <b id="distance">0 km</b>
+  </div>
+
  </div>
+
 </div>
 
+
+<!-- WEATHER -->
+
 <div class="panel">
+
  <h2>🌦️ Marine Weather</h2>
 
  <div class="weather">
-  <div class="card">Temperature<b id="temp">-- °C</b></div>
-  <div class="card">Rain Chance<b id="rain">-- %</b></div>
-  <div class="card">Wind<b id="wind">-- km/h</b></div>
-  <div class="card">Wind Direction<b id="windDir">--°</b></div>
-  <div class="card">Wave Height<b id="wave">-- m</b></div>
-  <div class="card">Wave Direction<b id="waveDir">--°</b></div>
-  <div class="card">Weather<b id="weatherText">Loading...</b></div>
-  <div class="card">Updated<b id="updated">--</b></div>
+
+  <div class="card">
+   Temperature
+   <b id="temp">-- °C</b>
+  </div>
+
+  <div class="card">
+   Rain Chance
+   <b id="rain">-- %</b>
+  </div>
+
+  <div class="card">
+   Wind
+   <b id="wind">-- km/h</b>
+  </div>
+
+  <div class="card">
+   Wind Direction
+   <b id="windDir">--°</b>
+  </div>
+
+  <div class="card">
+   Wave Height
+   <b id="wave">-- m</b>
+  </div>
+
+  <div class="card">
+   Wave Direction
+   <b id="waveDir">--°</b>
+  </div>
+
+  <div class="card">
+   Weather
+   <b id="weatherText">Loading...</b>
+  </div>
+
+  <div class="card">
+   Updated
+   <b id="updated">--</b>
+  </div>
+
  </div>
 
- <div id="weatherAlert" class="alert safe">
+ <div id="weatherAlert"
+ class="alert safe">
   Weather information loading...
  </div>
+
 </div>
+
+
+<!-- EARNINGS -->
 
 <div class="panel earn">
+
  <h2>💰 SeaMate Earnings</h2>
+
  <p>
-  SeaMate Pakistan ko free rakhne ke liye future mein ads,
-  premium features aur sponsorships add ki ja sakti hain.
+ Free users ke liye ads aur premium users ke liye
+ paid features ka system rakha gaya hai.
  </p>
 
- <button onclick="showEarningInfo()">💳 Monetization</button>
+ <button onclick="showEarningInfo()">
+  💳 Monetization Info
+ </button>
 
  <div id="earningInfo" class="hidden">
+
   <p>
-   Premium features, advertisements aur sponsor section ke liye
-   app ko monetization-ready rakha gaya hai.
+   Future mein Google AdSense/AdMob type advertising
+   aur paid subscription system connect kiya ja sakta hai.
   </p>
+
   <p>
-   Note: earning automatically start nahi hoti.
-   Ads/payment provider ko baad mein connect karna hoga.
+   JazzCash payment automatic verify karne ke liye
+   merchant API/Gateway integration zaroori hai.
   </p>
+
  </div>
+
 </div>
 
+
+<!-- SAFETY -->
+
 <div class="panel">
+
  <h2>🌊 Safety Notice</h2>
+
  <p>
-  Weather aur marine information forecast data par based hai.
-  Samundar mein jane se pehle official marine/weather warnings
-  bhi check karein.
+ Weather aur marine information forecast data par based hai.
+ Samundar mein jane se pehle official marine/weather
+ warnings bhi check karein.
  </p>
+
 </div>
+
 
 <footer>
  SeaMate Pakistan © 2026
 </footer>
 
+
+<!-- HELP -->
+
 <div id="helpBox" class="hidden">
+
  <h2>⚓ SeaMate Pakistan Help</h2>
+
  <p>📍 GPS: Apni current location map par dekhein.</p>
+
  <p>🌦 Weather: Rain chance, wind aur marine conditions dekhein.</p>
+
  <p>▶ Start: GPS route tracking start karein.</p>
+
  <p>📌 Point: Map par waypoint save karein.</p>
+
  <p>💾 Save: Route phone/browser mein save karein.</p>
+
  <p>📂 Load: Saved route wapas load karein.</p>
+
  <p>🗑 Clear: Route clear karein.</p>
- <button onclick="closeHelp()">Close</button>
+
+ <p>⭐ Premium: Payment section open karein.</p>
+
+ <button onclick="closeHelp()">
+  Close
+ </button>
+
 </div>
+
+</div>
+
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+
 <script>
-let map = L.map('map').setView([24.82,67.05],10);
 
-let osm = L.tileLayer(
- 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
- {
-  maxZoom:19,
-  attribution:'© OpenStreetMap'
- }
-).addTo(map);
+/* =====================================================
+   ACCOUNT
+===================================================== */
 
-let sea = L.tileLayer(
- 'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
- {
-  maxZoom:18,
-  attribution:'© OpenSeaMap'
- }
-).addTo(map);
+const ACCOUNT_KEY="seamate_account";
+const LOGIN_KEY="seamate_logged";
 
-L.control.layers({
- "Street Map":osm
-},{
- "Sea Map":sea
-}).addTo(map);
+const THREE_DAYS =
+  3*24*60*60*1000;
 
-let marker=null;
-let watchId=null;
-let route=[];
-let routeLine=null;
-let lastPosition=null;
-let totalDistance=0;
-let alternate=false;
 
-function zoomIn(){
- map.zoomIn();
-}
+/* CREATE ACCOUNT */
 
-function zoomOut(){
- map.zoomOut();
-}
+function createAccount(){
 
-function toggleLayout(){
- alternate=!alternate;
+ const name=
+ document.getElementById("nameInput").value.trim();
 
- if(alternate){
-  document.getElementById("map").style.height="65vh";
- }else{
-  document.getElementById("map").style.height="54vh";
- }
+ const phone=
+ document.getElementById("phoneInput").value.trim();
 
- setTimeout(()=>map.invalidateSize(),300);
-}
+ const password=
+ document.getElementById("passwordInput").value;
 
-function locateMe(){
- if(!navigator.geolocation){
-  alert("GPS is not supported on this device.");
+ const msg=
+ document.getElementById("loginMsg");
+
+
+ if(!name || !phone || !password){
+
+  msg.innerText=
+  "❌ Sab fields fill karein.";
+
   return;
  }
 
+
+ if(!/^03[0-9]{9}$/.test(phone)){
+
+  msg.innerText=
+  "❌ Mobile 03XXXXXXXXX format mein dein.";
+
+  return;
+ }
+
+
+ if(password.length<4){
+
+  msg.innerText=
+  "❌ Password kam az kam 4 characters ka ho.";
+
+  return;
+ }
+
+
+ const account={
+  name:name,
+  phone:phone,
+  password:password,
+  createdAt:Date.now(),
+  paid:false,
+  paymentPending:false,
+  transactionId:""
+ };
+
+
+ localStorage.setItem(
+  ACCOUNT_KEY,
+  JSON.stringify(account)
+ );
+
+
+ localStorage.setItem(
+  LOGIN_KEY,
+  "yes"
+ );
+
+
+ openApp();
+
+}
+
+
+/* LOGIN */
+
+function loginAccount(){
+
+ const phone=
+ document.getElementById("phoneInput").value.trim();
+
+ const password=
+ document.getElementById("passwordInput").value;
+
+ const msg=
+ document.getElementById("loginMsg");
+
+
+ const saved=
+ localStorage.getItem(ACCOUNT_KEY);
+
+
+ if(!saved){
+
+  msg.innerText=
+  "❌ Account nahi mila. Pehle Create Account karein.";
+
+  return;
+ }
+
+
+ const account=
+ JSON.parse(saved);
+
+
+ if(
+  account.phone!==phone ||
+  account.password!==password
+ ){
+
+  msg.innerText=
+  "❌ Mobile number ya password ghalat hai.";
+
+  return;
+ }
+
+
+ localStorage.setItem(
+  LOGIN_KEY,
+  "yes"
+ );
+
+
+ openApp();
+
+}
+
+
+/* OPEN APP */
+
+function openApp(){
+
+ document
+ .getElementById("loginPage")
+ .classList.add("hidden");
+
+ document
+ .getElementById("mainApp")
+ .classList.remove("hidden");
+
+ loadAccount();
+
+ setTimeout(function(){
+
+  initMap();
+
+ },100);
+
+}
+
+
+/* AUTO LOGIN */
+
+window.addEventListener(
+ "load",
+ function(){
+
+  if(
+   localStorage.getItem(LOGIN_KEY)==="yes" &&
+   localStorage.getItem(ACCOUNT_KEY)
+  ){
+
+   openApp();
+
+  }
+
+ }
+);
+
+
+/* LOAD ACCOUNT */
+
+function loadAccount(){
+
+ const saved=
+ localStorage.getItem(ACCOUNT_KEY);
+
+ if(!saved) return;
+
+ const account=
+ JSON.parse(saved);
+
+
+ document.getElementById(
+  "displayName"
+ ).innerText=
+ account.name;
+
+
+ updateSubscription(account);
+
+}
+
+
+/* SUBSCRIPTION */
+
+function updateSubscription(account){
+
+ const status=
+ document.getElementById(
+  "subscriptionStatus"
+ );
+
+ const remaining=
+ document.getElementById(
+  "trialRemaining"
+ );
+
+ const ads=
+ document.getElementById("adBox");
+
+
+ if(account.paid){
+
+  status.innerText=
+  "⭐ Premium";
+
+  remaining.innerText=
+  "Premium access active.";
+
+  ads.classList.add("hidden");
+
+  return;
+ }
+
+
+ const timeLeft=
+ THREE_DAYS -
+ (Date.now()-account.createdAt);
+
+
+ if(timeLeft<=0){
+
+  status.innerText=
+  "Trial Expired";
+
+  remaining.innerText=
+  "Free trial khatam ho gaya.";
+
+  ads.classList.remove("hidden");
+
+  return;
+ }
+
+
+ const hoursTotal=
+ Math.floor(
+  timeLeft/(60*60*1000)
+ );
+
+
+ const days=
+ Math.floor(hoursTotal/24);
+
+ const hours=
+ hoursTotal%24;
+
+
+ status.innerText=
+ "🆓 Free Trial";
+
+
+ remaining.innerText=
+ days+
+ " days "+
+ hours+
+ " hours remaining";
+
+ ads.classList.remove("hidden");
+
+}
+
+
+/* LOGOUT */
+
+function logout(){
+
+ localStorage.removeItem(
+  LOGIN_KEY
+ );
+
+ location.reload();
+
+}
+
+
+/* =====================================================
+   MAP
+===================================================== */
+
+let map=null;
+
+let osm=null;
+let sea=null;
+
+let marker=null;
+let watchId=null;
+
+let route=[];
+let routeLine=null;
+
+let lastPosition=null;
+let totalDistance=0;
+
+let alternate=false;
+
+
+/* INIT MAP */
+
+function initMap(){
+
+ if(map!==null){
+
+  setTimeout(
+   ()=>map.invalidateSize(),
+   200
+  );
+
+  return;
+ }
+
+
+ map=
+ L.map('map')
+ .setView(
+  [24.82,67.05],
+  10
+ );
+
+
+ osm=
+ L.tileLayer(
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {
+   maxZoom:19,
+   attribution:'© OpenStreetMap'
+  }
+ ).addTo(map);
+
+
+ sea=
+ L.tileLayer(
+  'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
+  {
+   maxZoom:18,
+   attribution:'© OpenSeaMap'
+  }
+ ).addTo(map);
+
+
+ L.control.layers(
+  {
+   "Street Map":osm
+  },
+  {
+   "Sea Map":sea
+  }
+ ).addTo(map);
+
+
+ L.marker(
+  [24.82,67.05]
+ )
+ .addTo(map)
+ .bindPopup(
+  "⚓ SeaMate Pakistan"
+ );
+
+}
+
+
+/* ZOOM */
+
+function zoomIn(){
+
+ if(map)
+  map.zoomIn();
+
+}
+
+
+function zoomOut(){
+
+ if(map)
+  map.zoomOut();
+
+}
+
+
+/* LAYOUT */
+
+function toggleLayout(){
+
+ alternate=!alternate;
+
+ const mapElement=
+ document.getElementById("map");
+
+
+ if(alternate){
+
+  mapElement.style.height="65vh";
+
+ }else{
+
+  mapElement.style.height="54vh";
+
+ }
+
+
+ setTimeout(
+  ()=>{
+   if(map)
+    map.invalidateSize();
+  },
+  300
+ );
+
+}
+
+
+/* =====================================================
+   GPS LOCATION
+===================================================== */
+
+function locateMe(){
+
+ if(!navigator.geolocation){
+
+  alert(
+   "GPS is not supported on this device."
+  );
+
+  return;
+ }
+
+
  navigator.geolocation.getCurrentPosition(
+
   function(pos){
-   let lat=pos.coords.latitude;
-   let lon=pos.coords.longitude;
 
-   map.setView([lat,lon],14);
+   const lat=
+   pos.coords.latitude;
 
-   if(marker) map.removeLayer(marker);
+   const lon=
+   pos.coords.longitude;
 
-   marker=L.marker([lat,lon])
-    .addTo(map)
-    .bindPopup("📍 Your GPS Location")
-    .openPopup();
 
-   updateWeather(lat,lon);
+   map.setView(
+    [lat,lon],
+    14
+   );
+
+
+   if(marker)
+    map.removeLayer(marker);
+
+
+   marker=
+   L.marker([lat,lon])
+   .addTo(map)
+   .bindPopup(
+    "📍 Your GPS Location"
+   )
+   .openPopup();
+
+
+   updateWeather(
+    lat,
+    lon
+   );
+
   },
+
   function(){
-   alert("GPS location nahi mil saki. Phone ka Location ON karein.");
+
+   alert(
+    "GPS location nahi mil saki. Phone ka Location ON karein."
+   );
+
   },
+
   {
    enableHighAccuracy:true,
    timeout:15000
   }
+
  );
+
 }
 
+
+/* =====================================================
+   START GPS TRACKING
+===================================================== */
+
 function startGPS(){
+
  if(!navigator.geolocation){
-  alert("GPS supported nahi hai.");
+
+  alert(
+   "GPS supported nahi hai."
+  );
+
   return;
  }
 
+
  if(watchId!==null){
-  alert("GPS already running.");
+
+  alert(
+   "GPS already running."
+  );
+
   return;
  }
+
 
  route=[];
  totalDistance=0;
+ lastPosition=null;
+
  updateRoute();
 
- watchId=navigator.geolocation.watchPosition(
+
+ watchId=
+ navigator.geolocation.watchPosition(
+
   function(pos){
 
-   let lat=pos.coords.latitude;
-   let lon=pos.coords.longitude;
+   const lat=
+   pos.coords.latitude;
 
-   document.getElementById("gpsStatus").innerText="ON";
+   const lon=
+   pos.coords.longitude;
 
-   let speed=pos.coords.speed;
 
-   if(speed===null || isNaN(speed)){
+   document.getElementById(
+    "gpsStatus"
+   ).innerText="ON";
+
+
+   let speed=
+   pos.coords.speed;
+
+
+   if(
+    speed===null ||
+    isNaN(speed)
+   ){
+
     speed=0;
+
    }else{
+
     speed=speed*3.6;
+
    }
 
-   document.getElementById("speed").innerText=
-    speed.toFixed(1)+" km/h";
 
-   if(pos.coords.heading!==null &&
-      !isNaN(pos.coords.heading)){
-    document.getElementById("heading").innerText=
-     Math.round(pos.coords.heading)+"°";
+   document.getElementById(
+    "speed"
+   ).innerText=
+   speed.toFixed(1)+" km/h";
+
+
+   if(
+    pos.coords.heading!==null &&
+    !isNaN(pos.coords.heading)
+   ){
+
+    document.getElementById(
+     "heading"
+    ).innerText=
+    Math.round(
+     pos.coords.heading
+    )+"°";
+
    }
 
-   let point=[lat,lon];
+
+   const point=[
+    lat,
+    lon
+   ];
+
 
    if(lastPosition){
-    let d=map.distance(lastPosition,point);
+
+    const d=
+    map.distance(
+     lastPosition,
+     point
+    );
+
+
     if(d>3){
-     totalDistance += d;
+
+     totalDistance+=d;
+
      route.push(point);
+
      updateRoute();
+
     }
+
    }else{
+
     route.push(point);
+
     updateRoute();
+
    }
+
 
    lastPosition=point;
 
-   map.setView(point,14);
 
-   if(marker) map.removeLayer(marker);
+   map.setView(
+    point,
+    14
+   );
 
-   marker=L.marker(point)
-    .addTo(map)
-    .bindPopup("🚤 Boat GPS");
 
-   updateWeather(lat,lon);
+   if(marker)
+    map.removeLayer(marker);
+
+
+   marker=
+   L.marker(point)
+   .addTo(map)
+   .bindPopup(
+    "🚤 Boat GPS"
+   );
+
+
+   updateWeather(
+    lat,
+    lon
+   );
+
   },
 
   function(){
-   document.getElementById("gpsStatus").innerText="ERROR";
-   alert("GPS error. Location permission check karein.");
+
+   document.getElementById(
+    "gpsStatus"
+   ).innerText="ERROR";
+
+
+   alert(
+    "GPS error. Location permission check karein."
+   );
+
   },
 
   {
@@ -442,259 +1498,98 @@ function startGPS(){
    maximumAge:5000,
    timeout:15000
   }
+
  );
+
 }
+
+
+/* STOP GPS */
 
 function stopGPS(){
+
  if(watchId!==null){
-  navigator.geolocation.clearWatch(watchId);
+
+  navigator.geolocation.clearWatch(
+   watchId
+  );
+
   watchId=null;
+
  }
 
- document.getElementById("gpsStatus").innerText="OFF";
+
+ document.getElementById(
+  "gpsStatus"
+ ).innerText="OFF";
+
 }
+
+
+/* =====================================================
+   ROUTE
+===================================================== */
 
 function updateRoute(){
+
  if(routeLine){
-  map.removeLayer(routeLine);
+
+  map.removeLayer(
+   routeLine
+  );
+
  }
+
 
  if(route.length>1){
-  routeLine=L.polyline(route,{
-   weight:5
-  }).addTo(map);
+
+  routeLine=
+  L.polyline(
+   route,
+   {
+    weight:5
+   }
+  ).addTo(map);
+
  }
 
- document.getElementById("distance").innerText=
-  (totalDistance/1000).toFixed(2)+" km";
+
+ document.getElementById(
+  "distance"
+ ).innerText=
+ (
+  totalDistance/1000
+ ).toFixed(2)+" km";
+
 }
+
+
+/* ADD POINT */
 
 function addPoint(){
- let center=map.getCenter();
+
+ const center=
+ map.getCenter();
+
 
  L.marker(center)
-  .addTo(map)
-  .bindPopup("📌 Saved Point")
-  .openPopup();
+ .addTo(map)
+ .bindPopup(
+  "📌 Saved Point"
+ )
+ .openPopup();
 
- route.push([center.lat,center.lng]);
- updateRoute();
-}
 
-function saveRoute(){
- if(route.length===0){
-  alert("Pehle route ya point add karein.");
-  return;
- }
+ route.push([
+  center.lat,
+  center.lng
+ ]);
 
- localStorage.setItem(
-  "seamate_route",
-  JSON.stringify(route)
- );
 
- alert("Route save ho gaya.");
-}
-
-function loadRoute(){
- let data=localStorage.getItem("seamate_route");
-
- if(!data){
-  alert("Koi saved route nahi mila.");
-  return;
- }
-
- route=JSON.parse(data);
  updateRoute();
 
- if(route.length){
-  map.fitBounds(routeLine.getBounds());
- }
-
- alert("Saved route load ho gaya.");
 }
 
-function clearRoute(){
- route=[];
 
- if(routeLine){
-  map.removeLayer(routeLine);
-  routeLine=null;
- }
-
- totalDistance=0;
- lastPosition=null;
-
- document.getElementById("distance").innerText="0 km";
-
- alert("Route clear ho gaya.");
-}
-
-async function updateWeather(lat=null,lon=null){
-
- if(lat===null || lon===null){
-
-  if(navigator.geolocation){
-
-   navigator.geolocation.getCurrentPosition(
-    p=>{
-     updateWeather(
-      p.coords.latitude,
-      p.coords.longitude
-     );
-    },
-    ()=>{
-     updateWeather(24.82,67.05);
-    },
-    {enableHighAccuracy:true,timeout:10000}
-   );
-
-   return;
-  }
-
-  lat=24.82;
-  lon=67.05;
- }
-
- try{
-
-  let weatherURL=
-   "https://api.open-meteo.com/v1/forecast"+
-   "?latitude="+lat+
-   "&longitude="+lon+
-   "&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m"+
-   "&hourly=precipitation_probability"+
-   "&forecast_days=2"+
-   "&timezone=auto";
-
-  let response=await fetch(weatherURL);
-  let data=await response.json();
-
-  let current=data.current;
-
-  document.getElementById("temp").innerText=
-   Math.round(current.temperature_2m)+" °C";
-
-  document.getElementById("wind").innerText=
-   Math.round(current.wind_speed_10m)+" km/h";
-
-  document.getElementById("windDir").innerText=
-   Math.round(current.wind_direction_10m)+"°";
-
-  let rainChance=0;
-
-  if(data.hourly &&
-     data.hourly.precipitation_probability){
-
-   let nowIndex=0;
-
-   if(data.hourly.time &&
-      data.hourly.time.length){
-
-    let now=new Date();
-
-    let closest=0;
-    let diff=Infinity;
-
-    data.hourly.time.forEach((t,i)=>{
-     let d=Math.abs(
-      new Date(t).getTime()-now.getTime()
-     );
-
-     if(d<diff){
-      diff=d;
-      closest=i;
-     }
-    });
-
-    nowIndex=closest;
-   }
-
-   rainChance=
-    data.hourly.precipitation_probability[nowIndex] || 0;
-  }
-
-  document.getElementById("rain").innerText=
-   rainChance+" %";
-
-  let code=current.weather_code;
-
-  let text=getWeatherText(code);
-
-  document.getElementById("weatherText").innerText=text;
-
-  let alertBox=document.getElementById("weatherAlert");
-
-  alertBox.className="alert";
-
-  if(rainChance>=70){
-   alertBox.classList.add("danger");
-   alertBox.innerText=
-    "⚠️ Barish ka imkaan zyada hai ("+
-    rainChance+"%). Samundari safar se pehle official warning check karein.";
-  }
-  else if(rainChance>=40){
-   alertBox.classList.add("warning");
-   alertBox.innerText=
-    "🌧️ Barish ka imkaan hai ("+
-    rainChance+"%). Mausam par nazar rakhein.";
-  }
-  else{
-   alertBox.classList.add("safe");
-   alertBox.innerText=
-    "✅ Filhal barish ka imkaan kam hai ("+
-    rainChance+"%).";
-  }
-
-  document.getElementById("updated").innerText=
-   new Date().toLocaleTimeString();
-
- }catch(error){
-
-  document.getElementById("weatherText").innerText=
-   "Unavailable";
-
-  document.getElementById("weatherAlert").innerText=
-   "Weather data abhi available nahi hai.";
-
- }
-}
-
-function getWeatherText(code){
-
- if(code===0) return "Clear";
- if(code<=3) return "Cloudy";
- if(code<=48) return "Fog";
- if(code<=57) return "Drizzle";
- if(code<=67) return "Rain";
- if(code<=77) return "Snow";
- if(code<=82) return "Rain";
- if(code<=86) return "Snow";
- if(code>=95) return "Storm";
-
- return "Unknown";
-}
-
-function showHelp(){
- document.getElementById("helpBox").classList.remove("hidden");
-}
-
-function closeHelp(){
- document.getElementById("helpBox").classList.add("hidden");
-}
-
-function showEarningInfo(){
- document.getElementById("earningInfo")
-  .classList.toggle("hidden");
-}
-
-/* Weather automatically refreshes every 30 minutes */
-setInterval(()=>{
- updateWeather();
-},1800000);
-
-/* Initial weather */
-updateWeather();
-</script>
-
-</body>
-</html>
+/* SAVE */
+ 
