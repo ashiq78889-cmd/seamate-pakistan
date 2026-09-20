@@ -6,462 +6,417 @@
       content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
 <meta name="theme-color" content="#063b5c">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="SeaMate Pakistan Marine GPS and Navigation">
 
 <title>SeaMate Pakistan</title>
 
 <link rel="stylesheet"
- href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 *{
- box-sizing:border-box;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
- margin:0;
- padding:0;
- width:100%;
- height:100%;
- overflow:hidden;
- font-family:Arial,sans-serif;
- background:#063b5c;
-}
-
-body{
- touch-action:manipulation;
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  background:#071923;
+  color:white;
 }
 
 #app{
- width:100%;
- height:100%;
- display:flex;
- flex-direction:column;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
 }
 
-/* =========================
-   TOP HEADER
-========================= */
-
+/* HEADER */
 .header{
- height:55px;
- flex-shrink:0;
- background:#063b5c;
- color:white;
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:5px 9px;
- border-bottom:2px solid #001e2e;
+  height:58px;
+  min-height:58px;
+  background:#063b5c;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:7px 10px;
+  border-bottom:2px solid #1f789e;
 }
 
-.brand{
- display:flex;
- align-items:center;
- gap:8px;
+.logoArea{
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
 .logo{
- width:40px;
- height:40px;
- border-radius:50%;
- background:white;
- display:flex;
- align-items:center;
- justify-content:center;
- color:#063b5c;
- font-size:22px;
- border:2px solid #8fcf3c;
+  width:40px;
+  height:40px;
+  border-radius:9px;
+  background:#0b668e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  border:1px solid #55c7e8;
 }
 
-.brandTitle{
- font-size:18px;
- font-weight:bold;
+.title{
+  font-size:17px;
+  font-weight:bold;
 }
 
-.brandSub{
- font-size:9px;
- opacity:.85;
+.subtitle{
+  font-size:10px;
+  color:#a9dbea;
+  margin-top:2px;
 }
 
 .status{
- text-align:right;
- font-size:10px;
- line-height:15px;
+  text-align:right;
 }
 
-.gpsOn{
- color:#7dff88;
+.gpsStatus{
+  font-size:12px;
+  color:#65ef9c;
+  font-weight:bold;
 }
 
-.free{
- color:#ffd45c;
+.freeStatus{
+  font-size:10px;
+  color:#ffd76a;
 }
 
-/* =========================
-   NAV DATA
-========================= */
-
+/* NAV DATA */
 .navData{
- background:#e8efd4;
- display:grid;
- grid-template-columns:1fr 1fr 1fr 1fr;
- border-bottom:2px solid #303b40;
- flex-shrink:0;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:4px;
+  padding:5px;
+  background:#0b2430;
 }
 
 .dataBox{
- min-width:0;
- padding:4px 6px;
- border-right:1px solid #929a94;
+  background:#092c3b;
+  border:1px solid #1b6279;
+  border-radius:5px;
+  padding:4px;
+  text-align:center;
 }
 
-.dataBox:last-child{
- border-right:0;
+.dataLabel{
+  font-size:9px;
+  color:#8fb5c2;
 }
 
-.label{
- font-size:9px;
- font-weight:bold;
- color:#555;
+.dataValue{
+  font-size:13px;
+  font-weight:bold;
+  margin-top:2px;
 }
 
-.value{
- margin-top:1px;
- font-family:monospace;
- font-size:15px;
- font-weight:bold;
- white-space:nowrap;
- overflow:hidden;
-}
-
-@media(max-width:390px){
- .value{
-  font-size:12px;
- }
-
- .label{
-  font-size:8px;
- }
-}
-
-/* =========================
-   COMPASS
-========================= */
-
-.compassBar{
- height:38px;
- flex-shrink:0;
- background:#91d23d;
- border-bottom:2px solid #37412c;
- position:relative;
- display:flex;
- align-items:center;
- justify-content:center;
- overflow:hidden;
+/* COMPASS */
+.compass{
+  height:35px;
+  min-height:35px;
+  overflow:hidden;
+  background:#03141d;
+  border-bottom:1px solid #17546b;
+  position:relative;
 }
 
 .compassScale{
- white-space:nowrap;
- font-family:monospace;
- font-size:14px;
- font-weight:bold;
- letter-spacing:1px;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  color:#d7eef5;
+  font-size:10px;
 }
 
-.compassCenter{
- position:absolute;
- left:50%;
- top:0;
- transform:translateX(-50%);
- height:38px;
- width:3px;
- background:#d60000;
- z-index:5;
+.headingMark{
+  position:absolute;
+  left:50%;
+  top:0;
+  transform:translateX(-50%);
+  height:100%;
+  width:2px;
+  background:#ff4d4d;
 }
 
-.compassArrow{
- position:absolute;
- left:50%;
- bottom:0;
- transform:translateX(-50%);
- width:0;
- height:0;
- border-left:7px solid transparent;
- border-right:7px solid transparent;
- border-bottom:11px solid #d60000;
- z-index:6;
+.headingMark:after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-5px;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-top:7px solid #ff4d4d;
 }
 
-/* =========================
-   MAP
-========================= */
-
+/* MAP */
 #map{
- flex:1;
- min-height:0;
- background:#9fd9ed;
+  flex:1;
+  min-height:0;
+  width:100%;
+  background:#0a3446;
 }
 
 .leaflet-control-zoom{
- margin-top:8px!important;
+  margin-top:8px!important;
 }
 
 .leaflet-control-zoom a{
- width:38px!important;
- height:38px!important;
- line-height:38px!important;
- font-size:23px!important;
+  width:36px!important;
+  height:36px!important;
+  line-height:36px!important;
+  font-size:22px!important;
 }
 
-.leaflet-control-layers{
- font-size:12px;
-}
-
-.leaflet-control-scale{
- margin-bottom:5px!important;
-}
-
-.leaflet-control-scale-line{
- background:#063b5c!important;
- color:white!important;
- border:2px solid white!important;
- font-weight:bold;
-}
-
-/* =========================
-   BOAT
-========================= */
-
+/* BOAT */
 .boatIcon{
- width:38px;
- height:38px;
- border-radius:50%;
- background:white;
- border:3px solid #063b5c;
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:21px;
- box-shadow:0 2px 7px #222;
+  width:38px;
+  height:38px;
+  background:#ff3434;
+  border:3px solid white;
+  border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg);
+  box-shadow:0 2px 8px #000;
+  position:relative;
 }
 
-/* =========================
-   MAP INFO
-========================= */
-
-.mapInfo{
- position:absolute;
- z-index:900;
- left:8px;
- top:104px;
- background:#063b5c;
- color:white;
- padding:7px 9px;
- border-radius:7px;
- font-size:10px;
- box-shadow:0 2px 7px #0008;
+.boatIcon span{
+  position:absolute;
+  transform:rotate(45deg);
+  font-size:20px;
+  left:7px;
+  top:5px;
 }
 
-.mapInfo b{
- color:#8fe33d;
+/* BOTTOM */
+.bottomPanel{
+  background:#071923;
+  border-top:2px solid #1c6078;
+  padding:5px;
 }
 
-/* =========================
-   BOTTOM DATA
-========================= */
-
-.bottomData{
- flex-shrink:0;
- background:#063b5c;
- color:white;
- display:grid;
- grid-template-columns:repeat(4,1fr);
- text-align:center;
- border-top:2px solid #001e2e;
+.quickData{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+  margin-bottom:5px;
 }
 
-.bottomCell{
- padding:4px 2px;
- border-right:1px solid #ffffff44;
- font-size:9px;
+.quick{
+  background:#0b2e3c;
+  border:1px solid #1c6278;
+  border-radius:5px;
+  text-align:center;
+  padding:4px;
 }
 
-.bottomCell:last-child{
- border-right:0;
+.quick b{
+  display:block;
+  font-size:13px;
 }
 
-.bottomCell b{
- display:block;
- font-family:monospace;
- font-size:13px;
+.quick span{
+  color:#88afbb;
+  font-size:8px;
 }
-
-/* =========================
-   BUTTON PANEL
-========================= */
 
 .buttons{
- flex-shrink:0;
- background:#102f40;
- padding:5px;
- display:grid;
- grid-template-columns:repeat(5,1fr);
- gap:4px;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:4px;
 }
 
 button{
- min-height:42px;
- border:0;
- border-radius:6px;
- background:#e9edf0;
- color:#102b3a;
- font-size:10px;
- font-weight:bold;
- box-shadow:0 2px 3px #0007;
+  border:0;
+  border-radius:5px;
+  padding:9px 3px;
+  color:white;
+  background:#0b6285;
+  font-size:10px;
+  font-weight:bold;
+  min-height:38px;
 }
 
 button:active{
- transform:scale(.95);
+  transform:scale(.96);
 }
 
-button.blue{
- background:#238bc5;
- color:white;
-}
+.green{background:#087a55}
+.red{background:#a92c35}
+.orange{background:#a96608}
+.dark{background:#273f49}
 
-button.green{
- background:#299d55;
- color:white;
-}
-
-button.red{
- background:#d54242;
- color:white;
-}
-
-button.dark{
- background:#59666d;
- color:white;
-}
-
-button.orange{
- background:#d88a22;
- color:white;
-}
-
-/* =========================
-   MESSAGE
-========================= */
-
-.message{
- position:absolute;
- z-index:3000;
- top:105px;
- left:50%;
- transform:translateX(-50%);
- background:#000d;
- color:white;
- padding:9px 13px;
- border-radius:20px;
- font-size:11px;
- display:none;
- white-space:nowrap;
-}
-
-/* =========================
-   PANEL
-========================= */
-
+/* LAYERS PANEL */
 .panel{
- position:absolute;
- z-index:4000;
- left:50%;
- top:50%;
- transform:translate(-50%,-50%);
- width:92%;
- max-width:430px;
- max-height:82%;
- overflow:auto;
- background:white;
- border-radius:13px;
- padding:15px;
- box-shadow:0 5px 30px #000b;
- display:none;
-}
-
-.panel h2{
- margin:0 0 10px;
- color:#063b5c;
+  position:absolute;
+  z-index:9999;
+  left:7px;
+  right:7px;
+  bottom:165px;
+  background:rgba(4,25,35,.97);
+  border:1px solid #398aa5;
+  border-radius:10px;
+  padding:10px;
+  box-shadow:0 5px 25px #000;
+  display:none;
 }
 
 .panel h3{
- color:#063b5c;
- margin-bottom:5px;
+  margin:0 0 8px;
+  font-size:15px;
 }
 
-.panel p{
- font-size:12px;
- line-height:1.5;
+.layerRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:8px 4px;
+  border-bottom:1px solid #194552;
+  font-size:12px;
 }
 
-.panel button{
- width:100%;
- margin-top:8px;
+.layerRow:last-child{
+  border-bottom:0;
 }
 
-.infoRow{
- display:flex;
- justify-content:space-between;
- padding:7px;
- margin-bottom:4px;
- background:#eef3d9;
- border-radius:5px;
- font-size:12px;
+.switch{
+  width:45px;
+  height:24px;
+  background:#33434a;
+  border-radius:20px;
+  position:relative;
 }
 
-/* =========================
-   DESKTOP
-========================= */
+.switch.on{
+  background:#008c63;
+}
+
+.switch i{
+  position:absolute;
+  width:20px;
+  height:20px;
+  background:white;
+  border-radius:50%;
+  top:2px;
+  left:2px;
+  transition:.2s;
+}
+
+.switch.on i{
+  left:23px;
+}
+
+.info{
+  margin-top:7px;
+  padding:7px;
+  border-radius:6px;
+  background:#0b3342;
+  color:#a9cbd5;
+  font-size:9px;
+  line-height:1.4;
+}
+
+/* GPS INFO */
+.gpsPanel{
+  position:absolute;
+  z-index:9999;
+  top:103px;
+  left:7px;
+  right:7px;
+  background:rgba(3,24,34,.95);
+  border:1px solid #3886a0;
+  border-radius:8px;
+  padding:8px;
+  display:none;
+}
+
+.gpsPanel b{
+  color:#68e6ff;
+}
+
+/* MAP LABEL */
+.mapLabel{
+  position:absolute;
+  z-index:900;
+  left:8px;
+  top:8px;
+  background:rgba(0,20,30,.8);
+  border:1px solid #28738e;
+  padding:5px 8px;
+  border-radius:5px;
+  font-size:9px;
+}
+
+/* DEPTH INFO */
+.depthBox{
+  position:absolute;
+  z-index:900;
+  right:8px;
+  top:8px;
+  background:rgba(0,20,30,.86);
+  border:1px solid #28738e;
+  padding:6px 8px;
+  border-radius:6px;
+  font-size:9px;
+}
+
+.depthBox strong{
+  color:#54ddff;
+  font-size:12px;
+}
+
+/* HELP */
+.helpPanel{
+  position:absolute;
+  z-index:9999;
+  left:7px;
+  right:7px;
+  top:100px;
+  background:rgba(3,24,34,.98);
+  border:1px solid #398aa5;
+  border-radius:10px;
+  padding:12px;
+  display:none;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.helpPanel h3{
+  margin-top:0;
+}
+
+/* RESPONSIVE */
+@media(max-width:360px){
+  .title{font-size:15px}
+  button{font-size:9px;padding:7px 2px}
+  .buttons{grid-template-columns:repeat(5,1fr)}
+}
 
 @media(min-width:700px){
+  .bottomPanel{
+    padding:8px 20px;
+  }
 
- .header{
-  height:64px;
- }
+  .buttons{
+    max-width:850px;
+    margin:auto;
+  }
 
- .brandTitle{
-  font-size:21px;
- }
-
- .compassBar{
-  height:42px;
- }
-
- .compassCenter{
-  height:42px;
- }
-
- .navData{
-  grid-template-columns:repeat(4,1fr);
- }
-
- .value{
-  font-size:17px;
- }
-
- .buttons{
-  grid-template-columns:repeat(10,1fr);
- }
-
- .bottomData{
-  display:none;
- }
-
- button{
-  font-size:12px;
- }
+  .quickData{
+    max-width:700px;
+    margin:0 auto 6px;
+  }
 }
 </style>
 </head>
@@ -470,1335 +425,95 @@ button.orange{
 
 <div id="app">
 
-<!-- HEADER -->
+  <!-- HEADER -->
+  <div class="header">
 
-<div class="header">
+    <div class="logoArea">
+      <div class="logo">⚓</div>
 
- <div class="brand">
+      <div>
+        <div class="title">SeaMate Pakistan</div>
+        <div class="subtitle">Marine GPS & Navigation</div>
+      </div>
+    </div>
 
-  <div class="logo">⚓</div>
+    <div class="status">
+      <div id="gpsStatus" class="gpsStatus">GPS OFF</div>
+      <div id="premiumStatus" class="freeStatus">FREE</div>
+    </div>
 
-  <div>
-   <div class="brandTitle">SeaMate Pakistan</div>
-   <div class="brandSub">
-    Marine GPS • Navigation • Sea Chart
-   </div>
   </div>
 
- </div>
 
- <div class="status">
-  <div id="gpsStatus">GPS OFF</div>
-  <div id="premiumStatus" class="free">FREE</div>
- </div>
+  <!-- NAVIGATION DATA -->
+  <div class="navData">
 
-</div>
+    <div class="dataBox">
+      <div class="dataLabel">LATITUDE</div>
+      <div id="lat" class="dataValue">--</div>
+    </div>
 
+    <div class="dataBox">
+      <div class="dataLabel">LONGITUDE</div>
+      <div id="lon" class="dataValue">--</div>
+    </div>
 
-<!-- NAVIGATION DATA -->
+    <div class="dataBox">
+      <div class="dataLabel">COG</div>
+      <div id="cog" class="dataValue">--°</div>
+    </div>
 
-<div class="navData">
+  </div>
 
- <div class="dataBox">
-  <div class="label">LATITUDE</div>
-  <div class="value" id="lat">--° --.---' N</div>
- </div>
 
- <div class="dataBox">
-  <div class="label">LONGITUDE</div>
-  <div class="value" id="lon">---° --.---' E</div>
- </div>
+  <!-- COMPASS -->
+  <div class="compass">
 
- <div class="dataBox">
-  <div class="label">COG</div>
-  <div class="value" id="cog">---°</div>
- </div>
+    <div class="headingMark"></div>
 
- <div class="dataBox">
-  <div class="label">SOG</div>
-  <div class="value" id="sog">0.0 kn</div>
- </div>
+    <div class="compassScale">
+      <span>000°</span>
+      <span>030°</span>
+      <span>060°</span>
+      <span>090°</span>
+      <span>120°</span>
+      <span>150°</span>
+      <span>180°</span>
+      <span>210°</span>
+      <span>240°</span>
+      <span>270°</span>
+      <span>300°</span>
+      <span>330°</span>
+    </div>
 
-</div>
+  </div>
 
 
-<!-- COMPASS -->
+  <!-- MAP -->
+  <div id="map"></div>
 
-<div class="compassBar">
 
- <div class="compassScale" id="compass">
-  300° 310° 320° 330° 340° 350° N 010° 020° 030° 040° 050° 060°
- </div>
+  <div class="mapLabel">
+    SEA-MATE CHART
+  </div>
 
- <div class="compassCenter"></div>
- <div class="compassArrow"></div>
+  <div class="depthBox">
+    DEPTH<br>
+    <strong id="depthText">Chart layer</strong>
+  </div>
 
-</div>
 
+  <!-- BOTTOM -->
+  <div class="bottomPanel">
 
-<!-- MAP -->
+    <div class="quickData">
 
-<div id="map"></div>
+      <div class="quick">
+        <b id="speed">0.0 kn</b>
+        <span>SPEED</span>
+      </div>
 
-
-<!-- MAP INFO -->
-
-<div class="mapInfo">
-
- <b>MARINE GPS</b><br>
- Depth / Rocks / Fish layers<br>
- only when chart data available
-
-</div>
-
-
-<!-- MESSAGE -->
-
-<div class="message" id="message"></div>
-
-
-<!-- BOTTOM -->
-
-<div class="bottomData">
-
- <div class="bottomCell">
-  SPEED
-  <b id="speedSmall">0.0 kn</b>
- </div>
-
- <div class="bottomCell">
-  HEADING
-  <b id="headingSmall">---°</b>
- </div>
-
- <div class="bottomCell">
-  DISTANCE
-  <b id="distanceSmall">0.00 nm</b>
- </div>
-
- <div class="bottomCell">
-  GPS
-  <b id="gpsSmall">OFF</b>
- </div>
-
-</div>
-
-
-<!-- BUTTONS -->
-
-<div class="buttons">
-
- <button onclick="zoomIn()">
-  ＋<br>Zoom
- </button>
-
- <button onclick="zoomOut()">
-  －<br>Zoom
- </button>
-
- <button class="blue" onclick="startGPS()">
-  📡<br>GPS
- </button>
-
- <button class="green" id="trackBtn" onclick="toggleTracking()">
-  ▶<br>Start
- </button>
-
- <button class="red" onclick="stopTracking()">
-  ■<br>Stop
- </button>
-
- <button onclick="addPoint()">
-  📍<br>Point
- </button>
-
- <button onclick="saveRoute()">
-  💾<br>Save
- </button>
-
- <button onclick="loadRoute()">
-  📂<br>Load
- </button>
-
- <button class="dark" onclick="clearRoute()">
-  🗑<br>Clear
- </button>
-
- <button class="orange" onclick="showMore()">
-  🌊<br>Marine
- </button>
-
-</div>
-
-</div>
-
-
-<!-- MARINE PANEL -->
-
-<div class="panel" id="marinePanel">
-
- <h2>🌊 Marine Information</h2>
-
- <div class="infoRow">
-  <span>Marine Chart</span>
-  <b>OpenSeaMap</b>
- </div>
-
- <div class="infoRow">
-  <span>Depth Data</span>
-  <b id="depthStatus">Chart dependent</b>
- </div>
-
- <div class="infoRow">
-  <span>Rocks / Hazards</span>
-  <b id="rockStatus">Chart dependent</b>
- </div>
-
- <div class="infoRow">
-  <span>Fishing Areas</span>
-  <b id="fishStatus">Verified data required</b>
- </div>
-
- <div class="infoRow">
-  <span>GPS</span>
-  <b id="panelGPS">OFF</b>
- </div>
-
- <h3>🐟 Fish Areas</h3>
-
- <p>
- SeaMate random location ko fish area nahi kahega.
- Fishing information ke liye verified marine/fishing
- data layer connect karna zaroori hai.
- </p>
-
- <h3>🪨 Underwater Rocks</h3>
-
- <p>
- Rocks, wrecks aur hazards sirf marine chart data
- available hone par map par show kiye jayenge.
- </p>
-
- <h3>🌊 Water Depth</h3>
-
- <p>
- Depth contours/bathymetry ke liye verified
- bathymetric chart required hai.
- </p>
-
- <button class="blue" onclick="showWeather()">
-  🌤️ Weather
- </button>
-
- <button onclick="closePanels()">
-  Close
- </button>
-
-</div>
-
-
-<!-- WEATHER PANEL -->
-
-<div class="panel" id="weatherPanel">
-
- <h2>🌤️ Marine Weather</h2>
-
- <div class="infoRow">
-  <span>Temperature</span>
-  <b id="weatherTemp">--</b>
- </div>
-
- <div class="infoRow">
-  <span>Rain Chance</span>
-  <b id="weatherRain">--</b>
- </div>
-
- <div class="infoRow">
-  <span>Wind</span>
-  <b id="weatherWind">--</b>
- </div>
-
- <div class="infoRow">
-  <span>Wind Direction</span>
-  <b id="weatherDirection">--</b>
- </div>
-
- <p>
- Weather service connection ke baghair app fake weather
- data display nahi karega.
- </p>
-
- <button onclick="closePanels()">
-  Close
- </button>
-
-</div>
-
-
-<!-- HELP -->
-
-<div class="panel" id="helpPanel">
-
- <h2>⚓ SeaMate Pakistan</h2>
-
- <h3>📡 GPS</h3>
- <p>
- GPS button se phone ka GPS activate hota hai.
- </p>
-
- <h3>🚤 SOG</h3>
- <p>
- Speed Over Ground — boat ki speed knots mein.
- </p>
-
- <h3>🧭 COG</h3>
- <p>
- Course Over Ground — boat kis direction mein move kar rahi hai.
- </p>
-
- <h3>📍 Point</h3>
- <p>
- Current GPS location ko waypoint ke taur par save karta hai.
- </p>
-
- <h3>🛣️ Track</h3>
- <p>
- Start se boat ka route map par red line ki form mein record hota hai.
- </p>
-
- <h3>🐟 Fish / 🪨 Rocks</h3>
- <p>
- Ye information GPS se automatically discover nahi hoti.
- Verified marine data source required hai.
- </p>
-
- <button onclick="closePanels()">
-  Close
- </button>
-
-</div>
-
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<script>
-
-/* =====================================================
-   MAP
-===================================================== */
-
-const map=L.map("map",{
- zoomControl:true,
- attributionControl:true
-}).setView([24.82,67.05],10);
-
-
-/* STANDARD MAP */
-
-const street=L.tileLayer(
- "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
- {
-  maxZoom:19,
-  attribution:"© OpenStreetMap"
- }
-).addTo(map);
-
-
-/* MARINE / SEAMARK OVERLAY */
-
-const seaMap=L.tileLayer(
- "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
- {
-  maxZoom:18,
-  opacity:.95,
-  attribution:"© OpenSeaMap"
- }
-).addTo(map);
-
-
-/* NAUTICAL SCALE */
-
-L.control.scale({
- imperial:false,
- metric:false,
- position:"bottomleft"
-}).addTo(map);
-
-
-/* LAYER CONTROL */
-
-L.control.layers(
- {
-  "Normal Map":street
- },
- {
-  "Marine Chart":seaMap
- },
- {
-  collapsed:true
- }
-).addTo(map);
-
-
-/* =====================================================
-   BOAT
-===================================================== */
-
-const boatIcon=L.divIcon({
- className:"",
- html:'<div class="boatIcon">🚤</div>',
- iconSize:[38,38],
- iconAnchor:[19,19]
-});
-
-let boatMarker=null;
-
-
-/* =====================================================
-   TRACK
-===================================================== */
-
-let trackPoints=[];
-
-const trackLine=L.polyline([],{
- color:"#ff0000",
- weight:4,
- opacity:.9
-}).addTo(map);
-
-
-/* =====================================================
-   WAYPOINTS
-===================================================== */
-
-let waypoints=[];
-
-
-/* =====================================================
-   GPS VARIABLES
-===================================================== */
-
-let watchID=null;
-let currentPosition=null;
-let previousPosition=null;
-
-let tracking=false;
-let totalDistance=0;
-
-
-/* =====================================================
-   START GPS
-===================================================== */
-
-function startGPS(){
-
- if(!navigator.geolocation){
-
-  showMessage("Is browser mein GPS available nahi hai");
-  return;
- }
-
- showMessage("GPS start ho raha hai...");
-
- if(watchID!==null){
-
-  navigator.geolocation.clearWatch(watchID);
-
- }
-
- watchID=navigator.geolocation.watchPosition(
-  positionSuccess,
-  positionError,
-  {
-   enableHighAccuracy:true,
-   maximumAge:1000,
-   timeout:15000
-  }
- );
-
- document.getElementById("gpsStatus").innerText="GPS ON";
- document.getElementById("gpsStatus").className="gpsOn";
-
- document.getElementById("gpsSmall").innerText="ON";
-
- document.getElementById("panelGPS").innerText="ON";
-
-}
-
-
-/* =====================================================
-   GPS SUCCESS
-===================================================== */
-
-function positionSuccess(pos){
-
- const lat=pos.coords.latitude;
- const lon=pos.coords.longitude;
-
- const speedMS=
-  pos.coords.speed || 0;
-
- const speedKnots=
-  speedMS*1.943844;
-
-
- let heading=pos.coords.heading;
-
-
- /* FALLBACK HEADING */
-
- if(
-  heading===null ||
-  heading===undefined ||
-  isNaN(heading)
- ){
-
-  if(previousPosition){
-
-   heading=calculateBearing(
-    previousPosition.lat,
-    previousPosition.lon,
-    lat,
-    lon
-   );
-
-  }else{
-
-   heading=0;
-
-  }
-
- }
-
-
- /* CURRENT */
-
- currentPosition={
-  lat:lat,
-  lon:lon,
-  speed:speedKnots,
-  heading:heading,
-  time:Date.now()
- };
-
-
- /* DISTANCE */
-
- if(previousPosition){
-
-  const d=distanceNM(
-   previousPosition.lat,
-   previousPosition.lon,
-   lat,
-   lon
-  );
-
-  if(d>0.00001){
-
-   totalDistance+=d;
-
-  }
-
- }
-
-
- previousPosition={
-  lat:lat,
-  lon:lon
- };
-
-
- /* DISPLAY */
-
- updateDisplay(
-  lat,
-  lon,
-  heading,
-  speedKnots
- );
-
-
- /* BOAT */
-
- if(!boatMarker){
-
-  boatMarker=L.marker(
-   [lat,lon],
-   {
-    icon:boatIcon
-   }
-  ).addTo(map);
-
- }else{
-
-  boatMarker.setLatLng([
-   lat,
-   lon
-  ]);
-
- }
-
-
- /* FIRST GPS */
-
- if(!window.firstGPSPosition){
-
-  map.setView([
-   lat,
-   lon
-  ],14);
-
-  window.firstGPSPosition=true;
-
- }
-
-
- /* TRACK */
-
- if(tracking){
-
-  trackPoints.push([
-   lat,
-   lon
-  ]);
-
-  trackLine.setLatLngs(
-   trackPoints
-  );
-
- }
-
-}
-
-
-/* =====================================================
-   GPS ERROR
-===================================================== */
-
-function positionError(error){
-
- let msg="GPS error";
-
- if(error.code===1){
-
-  msg="GPS permission allow karein";
-
- }
-
- if(error.code===2){
-
-  msg="GPS position available nahi";
-
- }
-
- if(error.code===3){
-
-  msg="GPS timeout";
-
- }
-
- showMessage(msg);
-
- document.getElementById(
-  "gpsStatus"
- ).innerText="GPS ERROR";
-
-}
-
-
-/* =====================================================
-   DISPLAY
-===================================================== */
-
-function updateDisplay(
- lat,
- lon,
- heading,
- speed
-){
-
- document.getElementById("lat").innerText=
-  formatCoordinate(lat,true);
-
- document.getElementById("lon").innerText=
-  formatCoordinate(lon,false);
-
- document.getElementById("cog").innerText=
-  Math.round(heading)+"°";
-
- document.getElementById("sog").innerText=
-  speed.toFixed(1)+" kn";
-
- document.getElementById("speedSmall").innerText=
-  speed.toFixed(1)+" kn";
-
- document.getElementById("headingSmall").innerText=
-  Math.round(heading)+"°";
-
- document.getElementById("distanceSmall").innerText=
-  totalDistance.toFixed(2)+" nm";
-
- updateCompass(heading);
-
-}
-
-
-/* =====================================================
-   COORDINATES
-===================================================== */
-
-function formatCoordinate(
- value,
- isLat
-){
-
- const abs=Math.abs(value);
-
- const degrees=Math.floor(abs);
-
- const minutes=
-  (abs-degrees)*60;
-
- const dir=isLat
-  ?(
-   value>=0
-   ?"N"
-   :"S"
-  )
-  :(
-   value>=0
-   ?"E"
-   :"W"
-  );
-
- return String(degrees)
-  .padStart(2,"0")+
-  "°"+
-  minutes
-  .toFixed(3)
-  .padStart(6,"0")+
-  "' "+
-  dir;
-
-}
-
-
-/* =====================================================
-   BEARING
-===================================================== */
-
-function calculateBearing(
- lat1,
- lon1,
- lat2,
- lon2
-){
-
- const r=Math.PI/180;
-
- const p1=lat1*r;
- const p2=lat2*r;
-
- const dl=
-  (lon2-lon1)*r;
-
- const y=
-  Math.sin(dl)*
-  Math.cos(p2);
-
- const x=
-  Math.cos(p1)*
-  Math.sin(p2)-
-  Math.sin(p1)*
-  Math.cos(p2)*
-  Math.cos(dl);
-
- let b=
-  Math.atan2(y,x)/r;
-
- return (b+360)%360;
-
-}
-
-
-/* =====================================================
-   DISTANCE
-===================================================== */
-
-function distanceNM(
- lat1,
- lon1,
- lat2,
- lon2
-){
-
- const R=6371000;
-
- const r=Math.PI/180;
-
- const dLat=
-  (lat2-lat1)*r;
-
- const dLon=
-  (lon2-lon1)*r;
-
- const a=
-  Math.sin(dLat/2)**2+
-  Math.cos(lat1*r)*
-  Math.cos(lat2*r)*
-  Math.sin(dLon/2)**2;
-
- const c=
-  2*Math.atan2(
-   Math.sqrt(a),
-   Math.sqrt(1-a)
-  );
-
- return(
-  R*c
- )/1852;
-
-}
-
-
-/* =====================================================
-   COMPASS
-===================================================== */
-
-function updateCompass(
- heading
-){
-
- const h=Math.round(heading);
-
- const values=[];
-
- for(let i=-6;i<=6;i++){
-
-  let v=
-   (h+i*10+360)%360;
-
-  if(v===0){
-
-   values.push("N");
-
-  }else if(v===90){
-
-   values.push("E");
-
-  }else if(v===180){
-
-   values.push("S");
-
-  }else if(v===270){
-
-   values.push("W");
-
-  }else{
-
-   values.push(
-    String(v).padStart(3,"0")+"°"
-   );
-
-  }
-
- }
-
- document.getElementById(
-  "compass"
- ).innerText=
-  values.join("   ");
-
-}
-
-
-/* =====================================================
-   TRACKING
-===================================================== */
-
-function toggleTracking(){
-
- if(tracking){
-
-  tracking=false;
-
-  document.getElementById(
-   "trackBtn"
-  ).innerHTML=
-   "▶<br>Start";
-
-  showMessage(
-   "Tracking paused"
-  );
-
- }else{
-
-  tracking=true;
-
-  document.getElementById(
-   "trackBtn"
-  ).innerHTML=
-   "⏸<br>Pause";
-
-  if(currentPosition){
-
-   trackPoints.push([
-    currentPosition.lat,
-    currentPosition.lon
-   ]);
-
-   trackLine.setLatLngs(
-    trackPoints
-   );
-
-  }
-
-  showMessage(
-   "Tracking started"
-  );
-
- }
-
-}
-
-
-/* =====================================================
-   STOP
-===================================================== */
-
-function stopTracking(){
-
- tracking=false;
-
- document.getElementById(
-  "trackBtn"
- ).innerHTML=
-  "▶<br>Start";
-
- showMessage(
-  "Tracking stopped"
- );
-
-}
-
-
-/* =====================================================
-   WAYPOINT
-===================================================== */
-
-function addPoint(){
-
- if(!currentPosition){
-
-  showMessage(
-   "Pehle GPS ON karein"
-  );
-
-  return;
- }
-
- const lat=
-  currentPosition.lat;
-
- const lon=
-  currentPosition.lon;
-
-
- const marker=
-  L.marker([
-   lat,
-   lon
-  ]).addTo(map);
-
-
- marker.bindPopup(
-  "<b>⚓ SeaMate Waypoint</b><br>"+
-  formatCoordinate(lat,true)+
-  "<br>"+
-  formatCoordinate(lon,false)
- );
-
-
- waypoints.push({
-  lat:lat,
-  lon:lon
- });
-
-
- marker.openPopup();
-
- showMessage(
-  "Waypoint saved"
- );
-
-}
-
-
-/* =====================================================
-   SAVE
-===================================================== */
-
-function saveRoute(){
-
- const data={
-  track:trackPoints,
-  waypoints:waypoints,
-  distance:totalDistance,
-  savedAt:new Date().toISOString()
- };
-
- localStorage.setItem(
-  "seamate_route",
-  JSON.stringify(data)
- );
-
- showMessage(
-  "Route phone mein save ho gaya"
- );
-
-}
-
-
-/* =====================================================
-   LOAD
-===================================================== */
-
-function loadRoute(){
-
- const raw=
-  localStorage.getItem(
-   "seamate_route"
-  );
-
- if(!raw){
-
-  showMessage(
-   "Saved route nahi mila"
-  );
-
-  return;
- }
-
- try{
-
-  const data=
-   JSON.parse(raw);
-
-  trackPoints=
-   data.track||[];
-
-  waypoints=
-   data.waypoints||[];
-
-  totalDistance=
-   data.distance||0;
-
-  trackLine.setLatLngs(
-   trackPoints
-  );
-
-
-  waypoints.forEach(
-   function(w){
-
-    const marker=
-     L.marker([
-      w.lat,
-      w.lon
-     ]).addTo(map);
-
-    marker.bindPopup(
-     "<b>Saved Waypoint</b><br>"+
-     formatCoordinate(
-      w.lat,
-      true
-     )+
-     "<br>"+
-     formatCoordinate(
-      w.lon,
-      false
-     )
-    );
-
-   }
-  );
-
-
-  if(trackPoints.length){
-
-   map.fitBounds(
-    trackLine.getBounds(),
-    {
-     padding:[20,20]
-    }
-   );
-
-  }
-
-
-  document.getElementById(
-   "distanceSmall"
-  ).innerText=
-   totalDistance.toFixed(2)+" nm";
-
-
-  showMessage(
-   "Saved route loaded"
-  );
-
- }catch(e){
-
-  showMessage(
-   "Route load error"
-  );
-
- }
-
-}
-
-
-/* =====================================================
-   CLEAR
-===================================================== */
-
-function clearRoute(){
-
- if(
-  !confirm(
-   "Route aur track clear karna hai?"
-  )
- ){
-
-  return;
-
- }
-
- trackPoints=[];
- waypoints=[];
- totalDistance=0;
-
- trackLine.setLatLngs([]);
-
- localStorage.removeItem(
-  "seamate_route"
- );
-
- document.getElementById(
-  "distanceSmall"
- ).innerText=
-  "0.00 nm";
-
- showMessage(
-  "Route clear ho gaya"
- );
-
-}
-
-
-/* =====================================================
-   ZOOM
-===================================================== */
-
-function zoomIn(){
-
- map.zoomIn();
-
-}
-
-function zoomOut(){
-
- map.zoomOut();
-
-}
-
-
-/* =====================================================
-   MARINE PANEL
-===================================================== */
-
-function showMore(){
-
- closePanels();
-
- document.getElementById(
-  "marinePanel"
- ).style.display="block";
-
-}
-
-
-/* =====================================================
-   WEATHER
-===================================================== */
-
-function showWeather(){
-
- closePanels();
-
- document.getElementById(
-  "weatherPanel"
- ).style.display="block";
-
- /*
-  Real weather API yahan connect ki ja sakti hai.
-  Fake weather intentionally display nahi kiya gaya.
- */
-
-}
-
-
-/* =====================================================
-   HELP / PANELS
-===================================================== */
-
-function closePanels(){
-
- document.getElementById(
-  "marinePanel"
- ).style.display="none";
-
- document.getElementById(
-  "weatherPanel"
- ).style.display="none";
-
- document.getElementById(
-  "helpPanel"
- ).style.display="none";
-
-}
-
-
-/* LONG PRESS / DOUBLE CLICK HELP */
-
-map.on(
- "dblclick",
- function(){
-
-  document.getElementById(
-   "helpPanel"
-  ).style.display="block";
-
- }
-);
-
-
-/* =====================================================
-   MESSAGE
-===================================================== */
-
-let messageTimer=null;
-
-function showMessage(text){
-
- const el=
-  document.getElementById(
-   "message"
-  );
-
- el.innerText=text;
-
- el.style.display="block";
-
- clearTimeout(
-  messageTimer
- );
-
- messageTimer=setTimeout(
-  function(){
-
-   el.style.display="none";
-
-  },
-  3000
- );
-
-}
-
-
-/* =====================================================
-   PREMIUM STATUS
-===================================================== */
-
-function checkPremium(){
-
- let account=null;
-
- try{
-
-  account=
-   JSON.parse(
-    localStorage.getItem(
-     "seamate_account"
-    )||"null"
-   );
-
- }catch(e){
-
-  account=null;
-
- }
-
-
- if(
-  account &&
-  account.paid===true
- ){
-
-  document.getElementById(
-   "premiumStatus"
-  ).innerText="PREMIUM";
-
-  document.getElementById(
-   "premiumStatus"
-  ).className="";
-
- }else{
-
-  document.getElementById(
-   "premiumStatus"
-  ).innerText="FREE";
-
-  document.getElementById(
-   "premiumStatus"
-  ).className="free";
-
- }
-
-}
-
-
-/* =====================================================
-   INITIAL
-===================================================== */
-
-updateCompass(0);
-
-checkPremium();
-
-
-/* =====================================================
-   SERVICE WORKER / OFFLINE CACHE
-===================================================== */
-
-if(
- "serviceWorker" in navigator
-){
-
- window.addEventListener(
-  "load",
-  function(){
-
-   /*
-    Vercel/PWA configuration ke saath
-    service worker separately add kiya ja sakta hai.
-   */
-
-  }
- );
-
-}
-
-</script>
-
-</body>
-</html>
+      <div class="quick">
+        <b id="heading">0°</b>
+        <span>HEADING</span>
+      </div
