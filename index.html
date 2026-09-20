@@ -2,1320 +2,1045 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <meta name="theme-color" content="#063b5c">
-<meta name="description" content="SeaMate Pakistan - Marine Utility App">
-<link rel="manifest" href="./manifest.json">
 <title>SeaMate Pakistan</title>
 
 <link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#eef7fb;
-  color:#123;
+
+html,body{
+ margin:0;
+ padding:0;
+ width:100%;
+ height:100%;
+ font-family:Arial,sans-serif;
+ background:#063b5c;
+ overflow:hidden;
 }
-button,input{
-  font:inherit;
+
+#app{
+ width:100%;
+ height:100%;
+ display:flex;
+ flex-direction:column;
 }
-button{
-  border:0;
-  border-radius:10px;
-  padding:11px 14px;
-  cursor:pointer;
+
+/* HEADER */
+.header{
+ height:58px;
+ background:#063b5c;
+ color:white;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:6px 12px;
+ flex-shrink:0;
 }
-.app{
-  max-width:700px;
-  margin:auto;
-  min-height:100vh;
-  background:white;
-}
-header{
-  background:#063b5c;
-  color:white;
-  padding:14px;
-  position:sticky;
-  top:0;
-  z-index:1000;
-}
-.header-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-}
+
 .logo{
-  font-size:21px;
-  font-weight:bold;
+ display:flex;
+ align-items:center;
+ gap:9px;
+ font-weight:bold;
+ font-size:20px;
 }
-.small{
-  font-size:12px;
-  opacity:.85;
+
+.logoIcon{
+ width:40px;
+ height:40px;
+ border-radius:50%;
+ background:white;
+ color:#063b5c;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:22px;
 }
-.menu{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-  margin-top:10px;
+
+.status{
+ font-size:12px;
+ text-align:right;
+ line-height:18px;
 }
-.menu button{
-  background:#fff;
-  color:#063b5c;
-  padding:8px 10px;
+
+/* GPS DATA */
+.data{
+ background:#eef3d9;
+ color:#111;
+ border-bottom:2px solid #555;
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ flex-shrink:0;
 }
-section{
-  padding:12px;
+
+.dataBox{
+ min-height:52px;
+ padding:5px 8px;
+ border-right:1px solid #999;
+ border-bottom:1px solid #999;
 }
-.card{
-  background:#fff;
-  border-radius:15px;
-  padding:14px;
-  margin-bottom:12px;
-  box-shadow:0 3px 14px rgba(0,0,0,.08);
+
+.label{
+ color:#555;
+ font-size:11px;
+ font-weight:bold;
 }
-h2,h3{
-  margin-top:0;
+
+.value{
+ font-family:monospace;
+ font-size:17px;
+ font-weight:bold;
+ margin-top:2px;
 }
-input{
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border:1px solid #ccd9df;
-  border-radius:10px;
+
+/* COMPASS */
+.compass{
+ height:38px;
+ background:#8fcf3c;
+ color:#111;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ overflow:hidden;
+ border-bottom:2px solid #555;
+ flex-shrink:0;
 }
-.primary{
-  width:100%;
-  background:#063b5c;
-  color:white;
-  margin-top:8px;
+
+.compassInner{
+ white-space:nowrap;
+ font-family:monospace;
+ font-size:17px;
+ font-weight:bold;
+ word-spacing:13px;
 }
-.green{
-  background:#138a55;
-  color:white;
+
+.north{
+ color:#064de0;
+ background:#9fd1ff;
+ padding:2px 6px;
 }
-.orange{
-  background:#ef8b20;
-  color:white;
-}
-.red{
-  background:#c93636;
-  color:white;
-}
-.blue{
-  background:#087db1;
-  color:white;
-}
-.installBtn{
-  width:100%;
-  background:#063b5c;
-  color:white;
-  margin:8px 0;
-  font-weight:bold;
-}
-.hidden{
-  display:none!important;
-}
-#loginPage{
-  min-height:100vh;
-  background:linear-gradient(160deg,#063b5c,#0a7598);
-  padding:25px 15px;
-}
-.login-card{
-  max-width:430px;
-  margin:35px auto;
-  background:white;
-  padding:22px;
-  border-radius:20px;
-  box-shadow:0 8px 30px rgba(0,0,0,.25);
-}
-.login-logo{
-  text-align:center;
-  font-size:30px;
-  font-weight:bold;
-  color:#063b5c;
-  margin-bottom:5px;
-}
-.login-sub{
-  text-align:center;
-  color:#666;
-  margin-bottom:20px;
-}
+
+/* MAP */
 #map{
-  height:380px;
-  border-radius:14px;
-  overflow:hidden;
+ flex:1;
+ min-height:0;
+ background:#ccecff;
 }
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
+
+.leaflet-control-zoom{
+ margin-top:8px!important;
 }
-.stat{
-  background:#eef7fb;
-  padding:12px;
-  border-radius:12px;
+
+.leaflet-control-zoom a{
+ width:38px!important;
+ height:38px!important;
+ line-height:38px!important;
+ font-size:24px!important;
 }
-.stat b{
-  display:block;
-  color:#063b5c;
-  font-size:18px;
-  margin-top:4px;
+
+.boatIcon{
+ width:34px;
+ height:34px;
+ border-radius:50%;
+ background:#fff;
+ border:3px solid #063b5c;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:20px;
+ box-shadow:0 2px 7px #333;
 }
-.toolbar{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
+
+/* BOTTOM INFO */
+.bottomInfo{
+ background:#063b5c;
+ color:white;
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ text-align:center;
+ padding:5px 3px;
+ flex-shrink:0;
 }
-.toolbar button{
-  color:white;
+
+.bottomItem{
+ border-right:1px solid rgba(255,255,255,.3);
+ font-size:11px;
 }
-.notice{
-  padding:12px;
-  border-radius:10px;
-  background:#fff5d8;
-  border-left:4px solid #f0a000;
+
+.bottomItem:last-child{
+ border-right:0;
 }
-.ad{
-  background:#f4f4f4;
-  border:2px dashed #aaa;
-  text-align:center;
-  padding:20px;
-  border-radius:12px;
+
+.bottomItem b{
+ display:block;
+ font-size:14px;
 }
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  z-index:3000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:15px;
+
+/* BUTTONS */
+.buttons{
+ background:#102f40;
+ padding:6px;
+ display:grid;
+ grid-template-columns:repeat(5,1fr);
+ gap:5px;
+ flex-shrink:0;
 }
-.modal-box{
-  background:white;
-  width:100%;
-  max-width:450px;
-  max-height:90vh;
-  overflow:auto;
-  border-radius:18px;
-  padding:20px;
+
+button{
+ border:0;
+ border-radius:6px;
+ background:#e9edf0;
+ color:#102b3a;
+ min-height:42px;
+ font-size:11px;
+ font-weight:bold;
+ box-shadow:0 1px 2px #0008;
 }
-footer{
-  text-align:center;
-  padding:20px;
-  color:#777;
+
+button:active{
+ transform:scale(.96);
+}
+
+button.active{
+ background:#21a65a;
+ color:white;
+}
+
+button.danger{
+ background:#d84242;
+ color:white;
+}
+
+button.blue{
+ background:#2d8bc9;
+ color:white;
+}
+
+button.dark{
+ background:#52616a;
+ color:white;
+}
+
+/* GPS MESSAGE */
+.gpsMsg{
+ position:absolute;
+ top:120px;
+ left:50%;
+ transform:translateX(-50%);
+ z-index:1000;
+ background:#000c;
+ color:white;
+ padding:8px 13px;
+ border-radius:20px;
+ font-size:12px;
+ display:none;
+}
+
+/* PANEL */
+.panel{
+ position:absolute;
+ left:50%;
+ bottom:145px;
+ transform:translateX(-50%);
+ width:92%;
+ max-width:430px;
+ background:white;
+ z-index:2000;
+ border-radius:12px;
+ box-shadow:0 4px 25px #0008;
+ padding:14px;
+ display:none;
+}
+
+.panel h3{
+ margin:0 0 10px;
+ color:#063b5c;
+}
+
+.panel p{
+ font-size:13px;
+ line-height:1.5;
+}
+
+.panel button{
+ width:100%;
+ margin-top:7px;
+}
+
+/* DESKTOP */
+@media(min-width:700px){
+ .header{
+  height:65px;
+ }
+ .data{
+  grid-template-columns:repeat(4,1fr);
+ }
+ .dataBox{
+  min-height:58px;
+ }
+ .buttons{
+  grid-template-columns:repeat(10,1fr);
+ }
+ .bottomInfo{
+  display:none;
+ }
+ button{
   font-size:12px;
-}
-@media(max-width:480px){
-  #map{height:330px}
-  .grid{grid-template-columns:1fr 1fr}
+ }
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="loginPage">
-  <div class="login-card">
-    <div class="login-logo">🌊 SeaMate Pakistan</div>
-    <div class="login-sub">Marine Utility App</div>
+<div id="app">
 
-    <input id="loginName" placeholder="Name">
-    <input id="loginMobile" placeholder="Mobile Number" inputmode="numeric">
-    <input id="loginPassword" type="password" placeholder="Password">
+<!-- HEADER -->
+<div class="header">
 
-    <button class="primary" onclick="createAccount()">
-      Create Account
-    </button>
-
-    <button class="primary" onclick="loginAccount()">
-      Login
-    </button>
-
-    <p id="loginMsg" style="text-align:center;color:#c33"></p>
-
-    <div class="notice">
-      🆓 New users ko 3 din ka free trial milta hai.
-    </div>
+ <div class="logo">
+  <div class="logoIcon">⚓</div>
+  <div>
+   <div>SeaMate Pakistan</div>
+   <div style="font-size:10px;font-weight:normal">
+    Marine GPS & Navigation
+   </div>
   </div>
+ </div>
+
+ <div class="status">
+  <div id="gpsStatus">GPS OFF</div>
+  <div id="premiumStatus">FREE</div>
+ </div>
+
 </div>
 
+<!-- GPS DATA -->
+<div class="data">
 
-<!-- MAIN APP -->
-<div id="app" class="app hidden">
+ <div class="dataBox">
+  <div class="label">POSITION</div>
+  <div class="value" id="lat">--° --.---' N</div>
+ </div>
 
-<header>
-  <div class="header-row">
-    <div>
-      <div class="logo">🌊 SeaMate Pakistan</div>
-      <div class="small" id="welcomeText">Marine Utility</div>
-    </div>
+ <div class="dataBox">
+  <div class="label">LONGITUDE</div>
+  <div class="value" id="lon">---° --.---' E</div>
+ </div>
 
-    <button onclick="logout()" style="background:#c93636;color:white">
-      Logout
-    </button>
-  </div>
+ <div class="dataBox">
+  <div class="label">COG</div>
+  <div class="value" id="cog">---°</div>
+ </div>
 
-  <div class="menu">
-    <button onclick="showSection('mapSection')">🗺️ Map</button>
-    <button onclick="showSection('dashboardSection')">🚤 Boat</button>
-    <button onclick="showSection('weatherSection')">🌤️ Weather</button>
-    <button onclick="showSection('paymentSection')">💳 Payment</button>
-    <button onclick="showSection('earningSection')">💰 Earnings</button>
-    <button onclick="showHelp()">❓ Help</button>
-  </div>
-</header>
+ <div class="dataBox">
+  <div class="label">SOG</div>
+  <div class="value" id="sog">0.0 kn</div>
+ </div>
 
-
-<section>
-
-<!-- ACCOUNT -->
-<div class="card">
-  <h3>👤 Account</h3>
-  <div class="grid">
-    <div class="stat">
-      Status
-      <b id="accountStatus">Free</b>
-    </div>
-
-    <div class="stat">
-      Trial
-      <b id="trialStatus">3 Days</b>
-    </div>
-  </div>
 </div>
 
-
-<!-- INSTALL -->
-<div class="card">
-  <h3>📱 SeaMate App</h3>
-  <p>SeaMate ko mobile ke home screen par install karein.</p>
-  <button class="installBtn" onclick="installApp()">
-    📱 Install SeaMate App
-  </button>
+<!-- COMPASS -->
+<div class="compass">
+ <div class="compassInner" id="compass">
+  300° 310° 320° 330° 340° 350°
+  <span class="north">N</span>
+  010° 020° 030° 040° 050° 060°
+ </div>
 </div>
-
-
-<!-- ADS -->
-<div id="adsSection" class="card">
-  <h3>📢 Advertisement</h3>
-  <div class="ad">
-    <b>Advertisement</b>
-    <br><br>
-    Free users ko yahan ads nazar aayengi.
-  </div>
-</div>
-
 
 <!-- MAP -->
-<div id="mapSection" class="card">
-  <h2>🗺️ Marine Map</h2>
+<div id="map"></div>
 
-  <div class="toolbar">
-    <button class="blue" onclick="zoomIn()">➕ Zoom In</button>
-    <button class="blue" onclick="zoomOut()">➖ Zoom Out</button>
+<div class="gpsMsg" id="gpsMsg"></div>
 
-    <button class="green" onclick="locateMe()">📍 My Location</button>
-    <button class="green" onclick="toggleGPS()">🛰️ Start / Stop GPS</button>
+<!-- BOTTOM INFO -->
+<div class="bottomInfo">
 
-    <button class="orange" onclick="addPoint()">📌 Add Point</button>
-    <button class="orange" onclick="toggleMapLayer()">🗺️ Layout</button>
+ <div class="bottomItem">
+  SPEED
+  <b id="speedSmall">0.0 kn</b>
+ </div>
 
-    <button class="blue" onclick="saveRoute()">💾 Save Route</button>
-    <button class="blue" onclick="loadRoute()">📂 Load Route</button>
+ <div class="bottomItem">
+  HEADING
+  <b id="headingSmall">---°</b>
+ </div>
 
-    <button class="red" onclick="clearRoute()">🗑️ Clear Route</button>
-  </div>
-
-  <br>
-
-  <div id="map"></div>
-
-  <p id="gpsMessage" class="small"></p>
-</div>
-
-
-<!-- DASHBOARD -->
-<div id="dashboardSection" class="card">
-  <h2>🚤 Boat Dashboard</h2>
-
-  <div class="grid">
-    <div class="stat">
-      📍 GPS
-      <b id="gpsValue">Waiting...</b>
-    </div>
-
-    <div class="stat">
-      🚤 Speed
-      <b id="speedValue">0 km/h</b>
-    </div>
-
-    <div class="stat">
-      🧭 Heading
-      <b id="headingValue">--°</b>
-    </div>
-
-    <div class="stat">
-      📏 Distance
-      <b id="distanceValue">0 km</b>
-    </div>
-  </div>
-</div>
-
-
-<!-- WEATHER -->
-<div id="weatherSection" class="card">
-  <h2>🌤️ Marine Weather</h2>
-
-  <button class="blue" onclick="updateWeather()">
-    🔄 Update Weather
-  </button>
-
-  <div class="grid" style="margin-top:10px">
-    <div class="stat">
-      🌡️ Temperature
-      <b id="temperature">--</b>
-    </div>
-
-    <div class="stat">
-      💨 Wind
-      <b id="windSpeed">--</b>
-    </div>
-
-    <div class="stat">
-      🧭 Wind Direction
-      <b id="windDirection">--</b>
-    </div>
-
-    <div class="stat">
-      🌧️ Rain
-      <b id="rainValue">--</b>
-    </div>
-  </div>
-
-  <p id="weatherMessage" class="small"></p>
-</div>
-
-
-<!-- PAYMENT -->
-<div id="paymentSection" class="card">
-  <h2>💳 Premium Access</h2>
-
-  <div class="notice">
-    Premium activate karne ke liye JazzCash payment karein.
-  </div>
-
-  <br>
-
-  <p><b>JazzCash Till ID:</b></p>
-
-  <div style="
-    background:#eef7fb;
-    padding:15px;
-    border-radius:12px;
-    font-size:22px;
-    text-align:center;
-    font-weight:bold;
-    letter-spacing:2px;">
-    984417122
-  </div>
-
-  <p>
-    Payment karne ke baad apna Transaction ID neeche submit karein.
-  </p>
-
-  <input id="transactionId"
-         placeholder="JazzCash Transaction ID">
-
-  <button class="primary" onclick="submitPayment()">
-    🧾 Submit Payment
-  </button>
-
-  <p id="paymentMessage"></p>
-</div>
-
-
-<!-- EARNING -->
-<div id="earningSection" class="card">
-  <h2>💰 Earnings</h2>
-
-  <div class="grid">
-    <div class="stat">
-      Users
-      <b id="userCount">1</b>
-    </div>
-
-    <div class="stat">
-      Status
-      <b id="earningStatus">Active</b>
-    </div>
-  </div>
-
-  <br>
-
-  <button class="blue" onclick="showEarningInfo()">
-    ℹ️ How Earnings Work
-  </button>
-
-  <p id="earningInfo" class="hidden">
-    Free users ko advertisements dikhayi ja sakti hain.
-    Premium users ke liye ads hide ki ja sakti hain.
-    Actual advertising revenue ke liye approved ad network
-    integration/backend setup zaroori hai.
-  </p>
-</div>
-
-
-<!-- SAFETY -->
-<div class="card">
-  <h2>🛟 Safety Notice</h2>
-
-  <div class="notice">
-    ⚠️ GPS, weather aur map information ko navigation ka
-    single source na samjhein. Samundar mein nikalne se
-    pehle local marine/weather information bhi check karein.
-  </div>
-</div>
-
-</section>
-
-<footer>
-  SeaMate Pakistan © 2026
-</footer>
+ <div class="bottomItem">
+  DISTANCE
+  <b id="distanceSmall">0.00 nm</b>
+ </div>
 
 </div>
 
+<!-- BUTTONS -->
+<div class="buttons">
 
-<!-- HELP MODAL -->
-<div id="helpModal" class="modal hidden">
-  <div class="modal-box">
-    <h2>❓ SeaMate Help</h2>
+ <button onclick="zoomIn()">＋<br>Zoom</button>
+ <button onclick="zoomOut()">－<br>Zoom</button>
 
-    <p><b>📍 My Location:</b> GPS location map par show karta hai.</p>
-    <p><b>🛰️ GPS:</b> Live location tracking start/stop karta hai.</p>
-    <p><b>📌 Add Point:</b> Current location ka point save karta hai.</p>
-    <p><b>💾 Save Route:</b> Route phone ke local storage mein save karta hai.</p>
-    <p><b>📂 Load Route:</b> Saved route dobara map par load karta hai.</p>
-    <p><b>🌤️ Weather:</b> Current weather information fetch karta hai.</p>
-    <p><b>💳 Payment:</b> JazzCash Till ID ke through payment submit ki ja sakti hai.</p>
-    <p><b>📱 Install:</b> App ko mobile home screen par install karne ki koshish karta hai.</p>
+ <button class="blue" onclick="startGPS()">
+  📡<br>GPS
+ </button>
 
-    <button class="primary" onclick="closeHelp()">
-      Close
-    </button>
-  </div>
+ <button id="trackBtn" class="active" onclick="toggleTracking()">
+  ▶<br>Start
+ </button>
+
+ <button class="danger" onclick="stopTracking()">
+  ■<br>Stop
+ </button>
+
+ <button onclick="addPoint()">
+  📍<br>Point
+ </button>
+
+ <button onclick="saveRoute()">
+  💾<br>Save
+ </button>
+
+ <button onclick="loadRoute()">
+  📂<br>Load
+ </button>
+
+ <button onclick="clearRoute()" class="dark">
+  🗑<br>Clear
+ </button>
+
+ <button class="blue" onclick="showHelp()">
+  ?<br>Help
+ </button>
+
 </div>
 
+</div>
+
+<!-- HELP PANEL -->
+<div class="panel" id="helpPanel">
+
+ <h3>⚓ SeaMate Pakistan</h3>
+
+ <p>
+ <b>GPS:</b> Mobile GPS se current position show karta hai.
+ </p>
+
+ <p>
+ <b>COG:</b> Boat kis direction mein move kar rahi hai.
+ </p>
+
+ <p>
+ <b>SOG:</b> Boat ki speed knots mein.
+ </p>
+
+ <p>
+ <b>Start:</b> Boat ka track record karta hai.
+ </p>
+
+ <p>
+ <b>Point:</b> Current location ko waypoint ke taur par save karta hai.
+ </p>
+
+ <p>
+ <b>Save:</b> Route phone mein save karta hai.
+ </p>
+
+ <p>
+ <b>Marine:</b> Map par marine/OpenSeaMap information available ho to show hogi.
+ </p>
+
+ <button onclick="closeHelp()">Close</button>
+
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
 /* =========================
-   GLOBAL VARIABLES
-========================= */
-
-let map = null;
-let marker = null;
-let gpsWatch = null;
-let tracking = false;
-
-let routePoints = [];
-let routeLine = null;
-
-let marineLayer = null;
-
-let totalDistance = 0;
-let lastPosition = null;
-
-let deferredInstallPrompt = null;
-
-
-/* =========================
-   ACCOUNT
-========================= */
-
-function getAccount(){
-  try{
-    return JSON.parse(localStorage.getItem("seamateAccount") || "null");
-  }catch(e){
-    return null;
-  }
-}
-
-
-function createAccount(){
-
-  const name =
-    document.getElementById("loginName").value.trim();
-
-  const mobile =
-    document.getElementById("loginMobile").value.trim();
-
-  const password =
-    document.getElementById("loginPassword").value;
-
-  const msg =
-    document.getElementById("loginMsg");
-
-  if(!name || !mobile || !password){
-    msg.textContent="Sab fields fill karein.";
-    return;
-  }
-
-  if(mobile.length < 10){
-    msg.textContent="Valid mobile number enter karein.";
-    return;
-  }
-
-  if(password.length < 4){
-    msg.textContent="Password kam az kam 4 characters ka ho.";
-    return;
-  }
-
-  if(getAccount()){
-    msg.textContent="Account already bana hua hai. Login karein.";
-    return;
-  }
-
-  const account={
-    name:name,
-    mobile:mobile,
-    password:password,
-    createdAt:Date.now(),
-    premium:false,
-    paymentPending:false,
-    transactionId:""
-  };
-
-  localStorage.setItem(
-    "seamateAccount",
-    JSON.stringify(account)
-  );
-
-  localStorage.setItem(
-    "seamateLoggedIn",
-    "true"
-  );
-
-  openApp();
-}
-
-
-function loginAccount(){
-
-  const mobile =
-    document.getElementById("loginMobile").value.trim();
-
-  const password =
-    document.getElementById("loginPassword").value;
-
-  const msg =
-    document.getElementById("loginMsg");
-
-  const account=getAccount();
-
-  if(!account){
-    msg.textContent="Pehle Create Account karein.";
-    return;
-  }
-
-  if(
-    account.mobile !== mobile ||
-    account.password !== password
-  ){
-    msg.textContent="Mobile ya password ghalat hai.";
-    return;
-  }
-
-  localStorage.setItem(
-    "seamateLoggedIn",
-    "true"
-  );
-
-  openApp();
-}
-
-
-function logout(){
-
-  localStorage.removeItem("seamateLoggedIn");
-
-  document.getElementById("app")
-    .classList.add("hidden");
-
-  document.getElementById("loginPage")
-    .classList.remove("hidden");
-}
-
-
-/* =========================
-   TRIAL / PREMIUM
-========================= */
-
-function getDaysLeft(){
-
-  const account=getAccount();
-
-  if(!account) return 0;
-
-  if(account.premium) return 999;
-
-  const threeDays=3*24*60*60*1000;
-
-  const elapsed=Date.now()-account.createdAt;
-
-  const remaining=Math.max(
-    0,
-    threeDays-elapsed
-  );
-
-  return Math.ceil(
-    remaining/(24*60*60*1000)
-  );
-}
-
-
-function updateAccountUI(){
-
-  const account=getAccount();
-
-  if(!account) return;
-
-  const days=getDaysLeft();
-
-  const status=document.getElementById("accountStatus");
-  const trial=document.getElementById("trialStatus");
-
-  if(account.premium){
-
-    status.textContent="Premium 💎";
-    trial.textContent="Active";
-
-    document.getElementById("adsSection")
-      .classList.add("hidden");
-
-  }else{
-
-    status.textContent="Free";
-
-    if(days>0){
-      trial.textContent=days+" Day(s) Left";
-    }else{
-      trial.textContent="Expired";
-    }
-
-    document.getElementById("adsSection")
-      .classList.remove("hidden");
-  }
-
-  document.getElementById("welcomeText").textContent =
-    "Welcome, "+account.name;
-}
-
-
-/* =========================
-   OPEN APP
-========================= */
-
-function openApp(){
-
-  document.getElementById("loginPage")
-    .classList.add("hidden");
-
-  document.getElementById("app")
-    .classList.remove("hidden");
-
-  updateAccountUI();
-
-  setTimeout(function(){
-
-    initMap();
-
-    if(navigator.geolocation){
-      updateWeather();
-    }
-
-  },300);
-}
-
-
-/* =========================
-   SECTION
-========================= */
-
-function showSection(id){
-
-  const sections=[
-    "mapSection",
-    "dashboardSection",
-    "weatherSection",
-    "paymentSection",
-    "earningSection"
-  ];
-
-  sections.forEach(function(x){
-
-    const el=document.getElementById(x);
-
-    if(el){
-      el.style.display =
-        x===id ? "block" : "none";
-    }
-
-  });
-
-  if(id==="mapSection" && map){
-    setTimeout(function(){
-      map.invalidateSize();
-    },200);
-  }
-}
-
-
-/* =========================
    MAP
 ========================= */
 
-function initMap(){
-
-  if(map) return;
-
-  map=L.map("map").setView(
-    [24.8607,67.0011],
-    9
-  );
-
-  L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      maxZoom:19,
-      attribution:"© OpenStreetMap"
-    }
-  ).addTo(map);
-
-  marineLayer=L.tileLayer(
-    "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
-    {
-      maxZoom:18,
-      attribution:"© OpenSeaMap"
-    }
-  ).addTo(map);
-
-  map.on("click",function(e){
-
-    routePoints.push([
-      e.latlng.lat,
-      e.latlng.lng
-    ]);
-
-    drawRoute();
-
-  });
-}
+const map = L.map("map",{
+ zoomControl:true,
+ attributionControl:true
+}).setView([24.82,67.05],10);
 
 
-function zoomIn(){
-
-  if(!map) initMap();
-
-  map.zoomIn();
-}
-
-
-function zoomOut(){
-
-  if(!map) initMap();
-
-  map.zoomOut();
-}
+/* NORMAL MAP */
+const street = L.tileLayer(
+ "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+ {
+  maxZoom:19,
+  attribution:"© OpenStreetMap"
+ }
+).addTo(map);
 
 
-function toggleMapLayer(){
+/* MARINE / OPEN SEA MAP */
+const seaMap = L.tileLayer(
+ "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+ {
+  maxZoom:18,
+  opacity:.9,
+  attribution:"© OpenSeaMap"
+ }
+).addTo(map);
 
-  if(!map) initMap();
 
-  if(marineLayer){
+/* BOAT ICON */
+const boatIcon = L.divIcon({
+ className:"",
+ html:'<div class="boatIcon">🚤</div>',
+ iconSize:[34,34],
+ iconAnchor:[17,17]
+});
 
-    if(map.hasLayer(marineLayer)){
-      map.removeLayer(marineLayer);
-    }else{
-      marineLayer.addTo(map);
-    }
+let boatMarker = null;
 
-  }
-}
+
+/* TRACK */
+let trackLine = L.polyline([],{
+ color:"#ff0000",
+ weight:4,
+ opacity:.9
+}).addTo(map);
+
+let trackPoints = [];
+
+
+/* WAYPOINTS */
+let waypoints = [];
+
+
+/* GPS */
+let watchID = null;
+let currentPosition = null;
+let previousPosition = null;
+let tracking = false;
+
+
+/* DISTANCE */
+let totalDistance = 0;
 
 
 /* =========================
-   GPS
+   GPS START
 ========================= */
-
-function locateMe(){
-
-  if(!navigator.geolocation){
-    alert("Is device mein GPS available nahi hai.");
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    handlePosition,
-    function(){
-      document.getElementById("gpsMessage")
-        .textContent=
-        "GPS permission allow karein.";
-    },
-    {
-      enableHighAccuracy:true,
-      timeout:15000
-    }
-  );
-}
-
-
-function handlePosition(position){
-
-  const lat=position.coords.latitude;
-  const lng=position.coords.longitude;
-
-  const speed=
-    position.coords.speed || 0;
-
-  const heading=
-    position.coords.heading;
-
-  if(!map) initMap();
-
-  map.setView(
-    [lat,lng],
-    Math.max(map.getZoom(),15)
-  );
-
-  if(marker){
-    marker.setLatLng([lat,lng]);
-  }else{
-
-    marker=L.marker([lat,lng])
-      .addTo(map)
-      .bindPopup("📍 Your Location");
-
-  }
-
-  marker.openPopup();
-
-  document.getElementById("gpsValue")
-    .textContent=
-    lat.toFixed(5)+", "+lng.toFixed(5);
-
-  document.getElementById("speedValue")
-    .textContent=
-    (speed*3.6).toFixed(1)+" km/h";
-
-  if(heading!==null && heading!==undefined){
-    document.getElementById("headingValue")
-      .textContent=
-      Math.round(heading)+"°";
-  }
-
-  if(tracking){
-
-    routePoints.push([lat,lng]);
-
-    drawRoute();
-
-    if(lastPosition){
-
-      totalDistance += distanceBetween(
-        lastPosition.lat,
-        lastPosition.lng,
-        lat,
-        lng
-      );
-
-      document.getElementById("distanceValue")
-        .textContent=
-        totalDistance.toFixed(2)+" km";
-    }
-
-    lastPosition={
-      lat:lat,
-      lng:lng
-    };
-
-  }
-
-  document.getElementById("gpsMessage")
-    .textContent="GPS location updated.";
-}
-
-
-function toggleGPS(){
-
-  if(tracking){
-    stopGPS();
-  }else{
-    startGPS();
-  }
-}
-
 
 function startGPS(){
 
-  if(!navigator.geolocation){
-    alert("GPS available nahi hai.");
-    return;
+ if(!navigator.geolocation){
+  showMessage("GPS browser mein available nahi hai");
+  return;
+ }
+
+ showMessage("GPS start ho raha hai...");
+
+ if(watchID !== null){
+  navigator.geolocation.clearWatch(watchID);
+ }
+
+ watchID = navigator.geolocation.watchPosition(
+  positionSuccess,
+  positionError,
+  {
+   enableHighAccuracy:true,
+   maximumAge:1000,
+   timeout:15000
   }
+ );
 
-  tracking=true;
-  totalDistance=0;
-  lastPosition=null;
-
-  document.getElementById("gpsMessage")
-    .textContent=
-    "🛰️ GPS tracking started.";
-
-  gpsWatch=navigator.geolocation.watchPosition(
-    handlePosition,
-    function(error){
-
-      document.getElementById("gpsMessage")
-        .textContent=
-        "GPS error: "+error.message;
-
-    },
-    {
-      enableHighAccuracy:true,
-      maximumAge:3000,
-      timeout:15000
-    }
-  );
-}
-
-
-function stopGPS(){
-
-  tracking=false;
-
-  if(gpsWatch!==null){
-
-    navigator.geolocation.clearWatch(
-      gpsWatch
-    );
-
-    gpsWatch=null;
-  }
-
-  document.getElementById("gpsMessage")
-    .textContent=
-    "🛑 GPS tracking stopped.";
+ document.getElementById("gpsStatus").innerText="GPS ON";
 }
 
 
 /* =========================
-   DISTANCE
+   GPS SUCCESS
 ========================= */
 
-function distanceBetween(
-  lat1,
-  lon1,
-  lat2,
-  lon2
-){
+function positionSuccess(pos){
 
-  const R=6371;
+ const lat = pos.coords.latitude;
+ const lon = pos.coords.longitude;
 
-  const dLat=
-    (lat2-lat1)*Math.PI/180;
+ const speedMS = pos.coords.speed || 0;
+ const speedKnots = speedMS * 1.943844;
 
-  const dLon=
-    (lon2-lon1)*Math.PI/180;
+ let heading = pos.coords.heading;
 
-  const a=
-    Math.sin(dLat/2)**2+
-    Math.cos(lat1*Math.PI/180)*
-    Math.cos(lat2*Math.PI/180)*
-    Math.sin(dLon/2)**2;
+ if(
+  heading === null ||
+  heading === undefined ||
+  isNaN(heading)
+ ){
 
-  return R*2*Math.atan2(
-    Math.sqrt(a),
-    Math.sqrt(1-a)
+  if(previousPosition){
+
+   heading = calculateBearing(
+    previousPosition.lat,
+    previousPosition.lon,
+    lat,
+    lon
+   );
+
+  }else{
+   heading = 0;
+  }
+ }
+
+ currentPosition={
+  lat:lat,
+  lon:lon,
+  speed:speedKnots,
+  heading:heading,
+  time:Date.now()
+ };
+
+
+ /* DISTANCE */
+ if(previousPosition){
+
+  const d = distanceNM(
+   previousPosition.lat,
+   previousPosition.lon,
+   lat,
+   lon
   );
+
+  if(d > 0.00001){
+   totalDistance += d;
+  }
+ }
+
+ previousPosition={
+  lat:lat,
+  lon:lon
+ };
+
+
+ updateDisplay(lat,lon,heading,speedKnots);
+
+
+ /* BOAT MARKER */
+ if(!boatMarker){
+
+  boatMarker=L.marker(
+   [lat,lon],
+   {icon:boatIcon}
+  ).addTo(map);
+
+ }else{
+
+  boatMarker.setLatLng([lat,lon]);
+
+ }
+
+
+ /* CENTER FIRST GPS POSITION */
+ if(!window.firstGPSPosition){
+
+  map.setView([lat,lon],14);
+  window.firstGPSPosition=true;
+
+ }
+
+
+ /* TRACK */
+ if(tracking){
+
+  trackPoints.push([lat,lon]);
+  trackLine.setLatLngs(trackPoints);
+
+ }
+
 }
 
 
 /* =========================
-   ROUTE
+   GPS ERROR
+========================= */
+
+function positionError(error){
+
+ let msg="GPS error";
+
+ if(error.code===1){
+  msg="GPS permission allow karein";
+ }
+
+ if(error.code===2){
+  msg="GPS position available nahi";
+ }
+
+ if(error.code===3){
+  msg="GPS timeout";
+ }
+
+ showMessage(msg);
+
+ document.getElementById("gpsStatus").innerText="GPS ERROR";
+}
+
+
+/* =========================
+   DISPLAY
+========================= */
+
+function updateDisplay(lat,lon,heading,speed){
+
+ const la=formatCoordinate(lat,true);
+ const lo=formatCoordinate(lon,false);
+
+ document.getElementById("lat").innerText=la;
+ document.getElementById("lon").innerText=lo;
+
+ document.getElementById("cog").innerText=
+  Math.round(heading)+"°";
+
+ document.getElementById("sog").innerText=
+  speed.toFixed(1)+" kn";
+
+ document.getElementById("speedSmall").innerText=
+  speed.toFixed(1)+" kn";
+
+ document.getElementById("headingSmall").innerText=
+  Math.round(heading)+"°";
+
+ document.getElementById("distanceSmall").innerText=
+  totalDistance.toFixed(2)+" nm";
+
+
+ updateCompass(heading);
+}
+
+
+/* =========================
+   COORDINATE FORMAT
+========================= */
+
+function formatCoordinate(value,isLat){
+
+ const abs=Math.abs(value);
+
+ const degrees=Math.floor(abs);
+
+ const minutes=(abs-degrees)*60;
+
+ const dir=isLat
+  ? (value>=0?"N":"S")
+  : (value>=0?"E":"W");
+
+ return String(degrees).padStart(2,"0")+
+  "°"+
+  minutes.toFixed(3).padStart(6,"0")+
+  "' "+
+  dir;
+}
+
+
+/* =========================
+   BEARING
+========================= */
+
+function calculateBearing(lat1,lon1,lat2,lon2){
+
+ const r=Math.PI/180;
+
+ const p1=lat1*r;
+ const p2=lat2*r;
+
+ const dl=(lon2-lon1)*r;
+
+ const y=Math.sin(dl)*Math.cos(p2);
+
+ const x=
+  Math.cos(p1)*Math.sin(p2)-
+  Math.sin(p1)*Math.cos(p2)*Math.cos(dl);
+
+ let b=Math.atan2(y,x)/r;
+
+ return (b+360)%360;
+}
+
+
+/* =========================
+   DISTANCE NM
+========================= */
+
+function distanceNM(lat1,lon1,lat2,lon2){
+
+ const R=6371000;
+
+ const r=Math.PI/180;
+
+ const dLat=(lat2-lat1)*r;
+ const dLon=(lon2-lon1)*r;
+
+ const a=
+  Math.sin(dLat/2)**2+
+  Math.cos(lat1*r)*
+  Math.cos(lat2*r)*
+  Math.sin(dLon/2)**2;
+
+ const c=2*Math.atan2(
+  Math.sqrt(a),
+  Math.sqrt(1-a)
+ );
+
+ const meters=R*c;
+
+ return meters/1852;
+}
+
+
+/* =========================
+   COMPASS
+========================= */
+
+function updateCompass(heading){
+
+ const h=Math.round(heading);
+
+ const numbers=[];
+
+ for(let i=-4;i<=4;i++){
+
+  let value=(h+i*10+360)%360;
+
+  if(value===0){
+
+   numbers.push(
+    '<span class="north">N</span>'
+   );
+
+  }else{
+
+   numbers.push(
+    String(value).padStart(3,"0")+"°"
+   );
+
+  }
+
+ }
+
+ document.getElementById("compass").innerHTML=
+  numbers.join(" &nbsp; ");
+}
+
+
+/* =========================
+   TRACKING
+========================= */
+
+function toggleTracking(){
+
+ if(tracking){
+  tracking=false;
+
+  document.getElementById("trackBtn").innerHTML=
+   "▶<br>Start";
+
+  showMessage("Tracking stopped");
+
+ }else{
+
+  tracking=true;
+
+  document.getElementById("trackBtn").innerHTML=
+   "⏸<br>Pause";
+
+  if(currentPosition){
+
+   trackPoints.push([
+    currentPosition.lat,
+    currentPosition.lon
+   ]);
+
+   trackLine.setLatLngs(trackPoints);
+
+  }
+
+  showMessage("Tracking started");
+ }
+}
+
+
+/* =========================
+   STOP
+========================= */
+
+function stopTracking(){
+
+ tracking=false;
+
+ document.getElementById("trackBtn").innerHTML=
+  "▶<br>Start";
+
+ showMessage("Tracking stopped");
+}
+
+
+/* =========================
+   POINT / WAYPOINT
 ========================= */
 
 function addPoint(){
 
-  if(!navigator.geolocation){
+ if(!currentPosition){
 
-    alert("GPS available nahi hai.");
-    return;
-  }
+  showMessage("Pehle GPS ON karein");
+  return;
 
-  navigator.geolocation.getCurrentPosition(
-    function(position){
+ }
 
-      const point=[
-        position.coords.latitude,
-        position.coords.longitude
-      ];
+ const lat=currentPosition.lat;
+ const lon=currentPosition.lon;
 
-      routePoints.push(point);
+ const marker=L.marker(
+  [lat,lon]
+ ).addTo(map);
 
-      drawRoute();
+ marker.bindPopup(
+  "<b>SeaMate Waypoint</b><br>"+
+  formatCoordinate(lat,true)+"<br>"+
+  formatCoordinate(lon,false)
+ );
 
-      if(map){
+ waypoints.push({
+  lat:lat,
+  lon:lon
+ });
 
-        L.marker(point)
-          .addTo(map)
-          .bindPopup("📌 Saved Point")
-          .openPopup();
+ marker.openPopup();
 
-      }
-
-    },
-    function(){
-
-      alert("GPS permission allow karein.");
-
-    }
-  );
+ showMessage("Waypoint saved");
 }
 
 
-function drawRoute(){
-
-  if(!map) return;
-
-  if(routeLine){
-
-    map.removeLayer(routeLine);
-  }
-
-  if(routePoints.length<2) return;
-
-  routeLine=L.polyline(
-    routePoints,
-    {
-      weight:4
-    }
-  ).addTo(map);
-
-  map.fitBounds(
-    routeLine.getBounds(),
-    {padding:[20,20]}
-  );
-}
-
+/* =========================
+   SAVE ROUTE
+========================= */
 
 function saveRoute(){
 
-  if(routePoints.length===0){
+ const data={
+  track:trackPoints,
+  waypoints:waypoints,
+  distance:totalDistance,
+  savedAt:new Date().toISOString()
+ };
 
-    alert("Pehle route ya points add karein.");
-    return;
-  }
+ localStorage.setItem(
+  "seamate_route",
+  JSON.stringify(data)
+ );
 
-  localStorage.setItem(
-    "seamateRoute",
-    JSON.stringify(routePoints)
-  );
-
-  alert("✅ Route save ho gaya.");
+ showMessage("Route phone mein save ho gaya");
 }
 
+
+/* =========================
+   LOAD ROUTE
+========================= */
 
 function loadRoute(){
 
-  const saved=
-    localStorage.getItem("seamateRoute");
+ const raw=
+  localStorage.getItem("seamate_route");
 
-  if(!saved){
+ if(!raw){
 
-    alert("Koi saved route nahi mila.");
-    return;
+  showMessage("Koi saved route nahi mila");
+  return;
+ }
+
+ try{
+
+  const data=JSON.parse(raw);
+
+  trackPoints=data.track||[];
+  waypoints=data.waypoints||[];
+  totalDistance=data.distance||0;
+
+  trackLine.setLatLngs(trackPoints);
+
+  waypoints.forEach(w=>{
+
+   const marker=L.marker(
+    [w.lat,w.lon]
+   ).addTo(map);
+
+   marker.bindPopup(
+    "<b>Saved Waypoint</b><br>"+
+    formatCoordinate(w.lat,true)+"<br>"+
+    formatCoordinate(w.lon,false)
+   );
+
+  });
+
+  if(trackPoints.length){
+
+   map.fitBounds(
+    trackLine.getBounds(),
+    {padding:[20,20]}
+   );
+
   }
 
-  try{
+  document.getElementById("distanceSmall").innerText=
+   totalDistance.toFixed(2)+" nm";
 
-    routePoints=JSON.parse(saved);
+  showMessage("Saved route loaded");
 
-    drawRoute();
+ }catch(e){
 
-    alert("✅ Route load ho gaya.");
+  showMessage("Route load error");
 
-  }catch(e){
+ }
 
-    alert("Saved route corrupt hai.");
-
-  }
 }
 
+
+/* =========================
+   CLEAR
+========================= */
 
 function clearRoute(){
 
-  routePoints=[];
+ if(!confirm("Route aur track clear karna hai?")){
+  return;
+ }
 
-  if(routeLine){
+ trackPoints=[];
+ waypoints=[];
+ totalDistance=0;
 
-    map.removeLayer(routeLine);
-    routeLine=null;
+ trackLine.setLatLngs([]);
 
-  }
+ localStorage.removeItem("seamate_route");
 
-  totalDistance=0;
+ document.getElementById("distanceSmall").innerText=
+  "0.00 nm";
 
-  document.getElementById("distanceValue")
-    .textContent="0 km";
-
-  alert("🗑️ Route clear ho gaya.");
+ showMessage("Route clear ho gaya");
 }
 
 
 /* =========================
-   WEATHER
+   ZOOM
 ========================= */
 
-async function updateWeather(){
-
-  const message=
-    document.getElementById("weatherMessage");
-
-  if(!navigator.geolocation){
-
-    message.textContent=
-      "Weather ke liye GPS required hai.";
-
-    return;
-  }
-
-  message.textContent=
-    "Weather loading...";
-
-  navigator.geolocation.getCurrentPosition(
-    async function(position){
-
-      const lat=position.coords.latitude;
-      const lon=position.coords.longitude;
-
-      try{
-
-        const url=
-          "https://api.open-meteo.com/v1/forecast"+
-          "?latitude="+lat+
-          "&longitude="+lon+
-          "&current=temperature_2m,wind_speed_10m,wind_direction_10m,precipitation";
-
-        const response=
-          await fetch(url);
-
-        const data=
-          await response.json();
-
-        const current=data.current;
-
-        document.getElementById("temperature")
-          .textContent=
-          current.temperature_2m+
-          " °C";
-
-        document.getElementById("windSpeed")
-          .textContent=
-          current.wind_speed_10m+
-          " km/h";
-
-        document.getElementById("windDirection")
-          .textContent=
-          current.wind_direction_10m+
-          "°";
-
-        document.getElementById("rainValue")
-          .textContent=
-          current.precipitation+
-          " mm";
-
-        message.textContent=
-          "Weather updated from your current GPS location.";
-
-      }catch(error){
-
-        message.textContent=
-          "Weather update failed.";
-
-      }
-
-    },
-    function(){
-
-      message.textContent=
-        "GPS permission allow karein.";
-
-    }
-  );
+function zoomIn(){
+ map.zoomIn();
 }
 
-
-/* =========================
-   PAYMENT
-========================= */
-
-function submitPayment(){
-
-  const transactionId=
-    document.getElementById("transactionId")
-      .value.trim();
-
-  const message=
-    document.getElementById("paymentMessage");
-
-  if(!transactionId){
-
-    message.style.color="#c33";
-    message.textContent=
-      "Transaction ID enter karein.";
-
-    return;
-  }
-
-  const account=getAccount();
-
-  if(!account) return;
-
-  account.paymentPending=true;
-  account.transactionId=transactionId;
-
-  localStorage.setItem(
-    "seamateAccount",
-    JSON.stringify(account)
-  );
-
-  message.style.color="#087db1";
-
-  message.textContent=
-    "✅ Transaction ID submit ho gaya. Verification ke baad Premium activate hoga.";
-
-}
-
-
-/* =========================
-   EARNINGS
-========================= */
-
-function showEarningInfo(){
-
-  const el=
-    document.getElementById("earningInfo");
-
-  el.classList.toggle("hidden");
+function zoomOut(){
+ map.zoomOut();
 }
 
 
@@ -1325,126 +1050,91 @@ function showEarningInfo(){
 
 function showHelp(){
 
-  document.getElementById("helpModal")
-    .classList.remove("hidden");
+ document.getElementById("helpPanel").style.display=
+  "block";
 }
-
 
 function closeHelp(){
 
-  document.getElementById("helpModal")
-    .classList.add("hidden");
+ document.getElementById("helpPanel").style.display=
+  "none";
 }
 
 
 /* =========================
-   PWA INSTALL
+   MESSAGE
 ========================= */
 
-window.addEventListener(
-  "beforeinstallprompt",
-  function(event){
+let messageTimer;
 
-    event.preventDefault();
+function showMessage(text){
 
-    deferredInstallPrompt=event;
+ const el=document.getElementById("gpsMsg");
 
-  }
-);
+ el.innerText=text;
+ el.style.display="block";
 
+ clearTimeout(messageTimer);
 
-async function installApp(){
-
-  if(deferredInstallPrompt){
-
-    deferredInstallPrompt.prompt();
-
-    try{
-
-      await deferredInstallPrompt.userChoice;
-
-    }catch(e){}
-
-    deferredInstallPrompt=null;
-
-  }else{
-
-    alert(
-      "Browser ke ⋮ menu se 'Install app' ya 'Add to Home screen' select karein."
-    );
-
-  }
+ messageTimer=setTimeout(()=>{
+  el.style.display="none";
+ },3000);
 }
 
 
 /* =========================
-   SERVICE WORKER
+   MAP LAYER CONTROL
 ========================= */
 
-if("serviceWorker" in navigator){
+L.control.layers(
+ {
+  "Map":street
+ },
+ {
+  "Marine Chart":seaMap
+ },
+ {
+  collapsed:true
+ }
+).addTo(map);
 
-  window.addEventListener(
-    "load",
-    function(){
 
-      navigator.serviceWorker
-        .register("./service-worker.js")
-        .then(function(){
+/* =========================
+   INITIAL COMPASS
+========================= */
 
-          console.log(
-            "SeaMate Service Worker registered"
-          );
+updateCompass(0);
 
-        })
-        .catch(function(error){
 
-          console.log(
-            "Service Worker error",
-            error
-          );
+/* =========================
+   PREMIUM DEMO STATUS
+========================= */
 
-        });
+function checkPremium(){
 
-    }
+ const account=
+  JSON.parse(
+   localStorage.getItem("seamate_account")||"null"
   );
+
+ if(account && account.paid){
+
+  document.getElementById(
+   "premiumStatus"
+  ).innerText="PREMIUM";
+
+ }else{
+
+  document.getElementById(
+   "premiumStatus"
+  ).innerText="FREE";
+
+ }
 }
 
-
-/* =========================
-   STARTUP
-========================= */
-
-window.addEventListener(
-  "load",
-  function(){
-
-    const account=getAccount();
-
-    const loggedIn=
-      localStorage.getItem(
-        "seamateLoggedIn"
-      );
-
-    if(account && loggedIn==="true"){
-
-      openApp();
-
-    }else{
-
-      document.getElementById("loginPage")
-        .classList.remove("hidden");
-
-      document.getElementById("app")
-        .classList.add("hidden");
-
-    }
-
-    showSection("mapSection");
-
-  }
-);
+checkPremium();
 
 </script>
 
 </body>
-</html>
+  </html>hmm P
