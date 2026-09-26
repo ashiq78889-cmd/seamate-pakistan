@@ -1,37 +1,651 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
+  <meta name="theme-color" content="#061b2b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-    <meta
-      name="theme-color"
-      content="#062c43"
-    />
+  <title>SeaMate Pakistan</title>
 
-    <meta
-      name="description"
-      content="SeaMate Pakistan - Marine GPS and navigation app"
-    />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
 
-    <link
-      rel="icon"
-      href="/favicon.svg"
-    />
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-    <title>SeaMate Pakistan</title>
-  </head>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #061b2b;
+      color: white;
+    }
 
-  <body>
-    <div id="root"></div>
+    #app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #061b2b;
+    }
 
-    <script
-      type="module"
-      src="/src/main.tsx"
-    ></script>
-  </body>
-</html>
+    /* TOP BAR */
+
+    .topbar {
+      height: 58px;
+      min-height: 58px;
+      background: #061522;
+      border-bottom: 1px solid #24506a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      z-index: 1000;
+    }
+
+    .brand {
+      font-size: 19px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .brand small {
+      display: block;
+      color: #70d8ff;
+      font-size: 10px;
+      font-weight: normal;
+      margin-top: 2px;
+    }
+
+    .gps-status {
+      background: #123b2d;
+      border: 1px solid #2ca66b;
+      color: #67e6a0;
+      border-radius: 20px;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* GPS DATA */
+
+    .data-panel {
+      background: #082538;
+      border-bottom: 1px solid #24506a;
+      padding: 7px;
+      z-index: 900;
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1.5fr 1fr 1fr;
+      gap: 5px;
+    }
+
+    .data-box {
+      background: #061b2b;
+      border: 1px solid #19445c;
+      border-radius: 6px;
+      padding: 5px;
+      min-width: 0;
+    }
+
+    .label {
+      color: #75b4ce;
+      font-size: 8px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .value {
+      margin-top: 2px;
+      font-size: 13px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    /* MAP */
+
+    #map {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      background: #0b3147;
+    }
+
+    .leaflet-control-attribution {
+      font-size: 8px !important;
+    }
+
+    /* COMPASS */
+
+    .compass {
+      position: absolute;
+      top: 137px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      background: rgba(4, 22, 35, 0.88);
+      border: 2px solid #7bd8ff;
+      z-index: 800;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+      pointer-events: none;
+    }
+
+    .compass-inner {
+      position: absolute;
+      inset: 7px;
+      border-radius: 50%;
+      border: 1px solid #315c70;
+    }
+
+    .north {
+      position: absolute;
+      top: 7px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ff5c5c;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .east {
+      position: absolute;
+      right: 8px;
+      top: 45%;
+      font-size: 11px;
+    }
+
+    .south {
+      position: absolute;
+      bottom: 7px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+    }
+
+    .west {
+      position: absolute;
+      left: 8px;
+      top: 45%;
+      font-size: 11px;
+    }
+
+    .compass-heading {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* BOAT */
+
+    .boat-marker {
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 25px solid #ff4d4d;
+      filter: drop-shadow(0 2px 3px #000);
+    }
+
+    /* BOTTOM INFO */
+
+    .bottom-info {
+      background: #061522;
+      border-top: 1px solid #24506a;
+      padding: 7px;
+      z-index: 900;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .nav-box {
+      text-align: center;
+      background: #082538;
+      border: 1px solid #19445c;
+      border-radius: 6px;
+      padding: 6px 3px;
+    }
+
+    .nav-box span {
+      display: block;
+      color: #75b4ce;
+      font-size: 8px;
+    }
+
+    .nav-box strong {
+      font-size: 14px;
+    }
+
+    /* BUTTONS */
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      margin-top: 6px;
+    }
+
+    button {
+      border: 1px solid #2b617a;
+      background: #0b3045;
+      color: white;
+      border-radius: 6px;
+      min-height: 38px;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: scale(0.96);
+      background: #14506b;
+    }
+
+    .gps-btn {
+      background: #0b4a35;
+      border-color: #2ca66b;
+    }
+
+    .point-btn {
+      background: #563d10;
+      border-color: #d8a928;
+    }
+
+    /* INFO */
+
+    .message {
+      position: absolute;
+      left: 50%;
+      bottom: 145px;
+      transform: translateX(-50%);
+      z-index: 1000;
+      width: calc(100% - 30px);
+      max-width: 420px;
+      padding: 8px 10px;
+      text-align: center;
+      background: rgba(4, 20, 31, 0.9);
+      border: 1px solid #315c70;
+      border-radius: 7px;
+      font-size: 11px;
+      display: none;
+    }
+
+    @media (max-width: 380px) {
+      .data-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .compass {
+        top: 185px;
+        width: 88px;
+        height: 88px;
+      }
+
+      .buttons {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      button {
+        font-size: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="app">
+
+  <div class="topbar">
+    <div class="brand">
+      🌊 SeaMate Pakistan
+      <small>Marine GPS & Navigation</small>
+    </div>
+
+    <div id="gpsStatus" class="gps-status">
+      GPS OFF
+    </div>
+  </div>
+
+  <div class="data-panel">
+
+    <div class="data-grid">
+
+      <div class="data-box">
+        <div class="label">Latitude</div>
+        <div id="lat" class="value">--</div>
+      </div>
+
+      <div class="data-box">
+        <div class="label">Longitude</div>
+        <div id="lng" class="value">--</div>
+      </div>
+
+      <div class="data-box">
+        <div class="label">COG</div>
+        <div id="cog" class="value">0°</div>
+      </div>
+
+      <div class="data-box">
+        <div class="label">SOG</div>
+        <div id="sog" class="value">0.0 kn</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="map"></div>
+
+  <div class="compass">
+    <div class="compass-inner"></div>
+
+    <div class="north">N</div>
+    <div class="east">E</div>
+    <div class="south">S</div>
+    <div class="west">W</div>
+
+    <div id="compassHeading" class="compass-heading">
+      000°
+    </div>
+  </div>
+
+  <div id="message" class="message"></div>
+
+  <div class="bottom-info">
+
+    <div class="nav-grid">
+
+      <div class="nav-box">
+        <span>DEPTH</span>
+        <strong id="depth">-- m</strong>
+      </div>
+
+      <div class="nav-box">
+        <span>DISTANCE</span>
+        <strong id="distance">0.00 nm</strong>
+      </div>
+
+      <div class="nav-box">
+        <span>TRACK</span>
+        <strong id="track">OFF</strong>
+      </div>
+
+      <div class="nav-box">
+        <span>STATUS</span>
+        <strong id="status">READY</strong>
+      </div>
+
+    </div>
+
+    <div class="buttons">
+
+      <button class="gps-btn" onclick="startGPS()">
+        📍 GPS
+      </button>
+
+      <button onclick="centerMap()">
+        🎯 CENTER
+      </button>
+
+      <button class="point-btn" onclick="addWaypoint()">
+        📌 POINT
+      </button>
+
+      <button onclick="toggleTrack()">
+        🛣️ TRACK
+      </button>
+
+      <button onclick="clearTrack()">
+        🗑️ CLEAR
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+
+  /* =========================
+     MAP
+  ========================= */
+
+  const defaultPosition = [24.82, 67.05];
+
+  const map = L.map("map", {
+    zoomControl: false,
+    attributionControl: true
+  }).setView(defaultPosition, 10);
+
+  L.control.zoom({
+    position: "bottomright"
+  }).addTo(map);
+
+  const satelliteLike = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap"
+    }
+  ).addTo(map);
+
+  /*
+    OpenSeaMap marine seamarks.
+    This can display available nautical marks
+    such as buoys and other chart information.
+  */
+
+  const seaMap = L.tileLayer(
+    "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+    {
+      maxZoom: 18,
+      opacity: 0.9,
+      attribution: "OpenSeaMap"
+    }
+  ).addTo(map);
+
+
+  /* =========================
+     GPS
+  ========================= */
+
+  let currentPosition = null;
+  let previousPosition = null;
+  let boatMarker = null;
+  let accuracyCircle = null;
+
+  let trackEnabled = false;
+  let trackLine = null;
+  let trackPoints = [];
+
+  let currentHeading = 0;
+  let currentSpeed = 0;
+
+
+  function showMessage(text) {
+    const box = document.getElementById("message");
+
+    box.innerText = text;
+    box.style.display = "block";
+
+    setTimeout(() => {
+      box.style.display = "none";
+    }, 3000);
+  }
+
+
+  function formatCoordinate(value, positive, negative) {
+
+    if (value === null || value === undefined) {
+      return "--";
+    }
+
+    const direction = value >= 0 ? positive : negative;
+
+    const absolute = Math.abs(value);
+
+    const degrees = Math.floor(absolute);
+
+    const minutes = (absolute - degrees) * 60;
+
+    return (
+      degrees +
+      "°" +
+      minutes.toFixed(3) +
+      "' " +
+      direction
+    );
+  }
+
+
+  function startGPS() {
+
+    if (!navigator.geolocation) {
+
+      showMessage(
+        "Is phone/browser mein GPS available nahi hai."
+      );
+
+      return;
+    }
+
+    document.getElementById("gpsStatus").innerText = "GPS SEARCHING";
+    document.getElementById("status").innerText = "SEARCHING";
+
+    navigator.geolocation.watchPosition(
+      gpsSuccess,
+      gpsError,
+      {
+        enableHighAccuracy: true,
+        maximumAge: 1000,
+        timeout: 15000
+      }
+    );
+
+    showMessage("GPS location search ho rahi hai...");
+  }
+
+
+  function gpsSuccess(position) {
+
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    const accuracy = position.coords.accuracy || 0;
+
+    const speedMeters = position.coords.speed;
+
+    const gpsHeading = position.coords.heading;
+
+    currentPosition = [latitude, longitude];
+
+    document.getElementById("gpsStatus").innerText =
+      "GPS ON";
+
+    document.getElementById("status").innerText =
+      "ACTIVE";
+
+
+    document.getElementById("lat").innerText =
+      formatCoordinate(latitude, "N", "S");
+
+    document.getElementById("lng").innerText =
+      formatCoordinate(longitude, "E", "W");
+
+
+    if (speedMeters !== null && speedMeters >= 0) {
+
+      currentSpeed = speedMeters * 1.943844;
+
+    }
+
+
+    if (
+      gpsHeading !== null &&
+      !isNaN(gpsHeading)
+    ) {
+
+      currentHeading = gpsHeading;
+
+    }
+
+
+    document.getElementById("sog").innerText =
+      currentSpeed.toFixed(1) + " kn";
+
+    document.getElementById("cog").innerText =
+      Math.round(currentHeading) + "°";
+
+    document.getElementById("compassHeading").innerText =
+      String(Math.round(currentHeading)).padStart(3, "0") + "°";
+
+
+    /* BOAT MARKER */
+
+    if (!boatMarker) {
+
+      const boatIcon = L.divIcon({
+        className: "",
+        html: '<div class="boat-marker"></div>',
+        iconSize: [20, 25],
+        iconAnchor: [10, 13]
+      });
+
+      boatMarker = L.marker(
+        currentPosition,
+        {
+          icon: boatIcon
+        }
+      ).addTo(map);
+
+    } else {
+
+      boatMarker.setLatLng(currentPosition);
+
+    }
+
+
+    /* ACCURACY */
+
+    if (!accuracyCircle) {
+
+      accuracyCircle = L.circle(
+        currentPosition,
+        {
+          radius: accuracy,
+          color: "#54c7ff",
+          fillColor: "#54c7ff",
+          fillOpacity: 0.08,
+          weight: 1
+        }
+      ).addTo(map);
+
+    } else {
+
+      accuracyCircle.setLatLng
